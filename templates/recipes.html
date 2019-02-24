@@ -1,29 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    {% for recipe in recipes %}
-        {{recipe.name}}
-        {{recipe.description}}
-        {{recipe.prep_time}}
-        {{recipe.cooking_time}}
-        {{recipe.servings}}
-        {{recipe.diet}}
-        {{recipe.category}}
-        {{recipe.origin}}
-        {{recipe.cuisine}}
-        {{recipe.author}}
-        {{recipe.image}}
-        {{recipe.votes}}
-        {{recipe.type}}
-        {{recipe.user}}
-        {{recipe.ingredients}}
-        {{recipe.instructions}}
-    {% endfor %}
-</body>
-</html>
+{% extends 'base.html' %} {% block content %}
+<section id="search-section">
+    <div class="section">
+        <div class="row">
+            <!--Recipe name search-->
+            <div id="recipe-search-box" class="col s12 m5 z-depth-2 ">
+                <form>
+                    <div class="input-field">
+                        <input id="icon_prefix" type="text" class="validate">
+                        <label for="icon_prefix">Recipe Name</label>
+                        <button class="btn waves-effect waves-light right search-button" type="submit" name="action">Recipe Name Search<i class="material-icons right">search</i></button>
+                    </div>
+                </form>
+            </div>
+
+            <!--Ingredients search-->
+            <div id="ingredient-search-box" class="col s12 m5 z-depth-2 ">
+                <form>
+                    <div class="input-field">
+                        <input id="icon_prefix" type="text" class="validate">
+                        <label for="icon_prefix">Ingredient</label>
+                        <button class="btn waves-effect waves-light right search-button" type="submit" name="action">Ingredient Search<i class="material-icons right">search</i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="filter-section">
+    <div class="section">
+        <div class="row">
+            <form class="z-depth-2">
+                <div class="row">
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for allergin in allergins %}
+                              <option value='{{allergin.name}}'>{{allergin.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Allergins</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for author in authors %}
+                              <option value='{{author.name}}'>{{author.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Authors</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for country in countries %}
+                                <option value='{{country.name}}'>{{country.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Authors Origin</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for category in categories %}
+                                <option value='{{category.name}}'>{{category.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Categories</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for cuisine in cuisines %}
+                                <option value='{{cuisine.name}}'>{{cuisine.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Cuisines</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for diet in diets %}
+                                <option value='{{diet.name}}'>{{diet.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Diet</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for origin in origins %}
+                                <option value='{{origin.name}}'>{{origin.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Origin</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <select>
+                            <option value="" disabled selected>Choose your option</option>
+                            {% for type in types %}
+                                <option value='{{type.name}}'>{{type.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Type</label>
+                    </div>
+                    <button class="btn waves-effect waves-light left search-button" type="submit" name="action">Search<i class="material-icons right">search</i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% for recipe in recipes %} {{recipe.name}} {{recipe.description}} {{recipe.prep_time}} {{recipe.cooking_time}} {{recipe.servings}} {{recipe.diet}} {{recipe.category}} {{recipe.origin}} {{recipe.cuisine}} {{recipe.author}} {{recipe.image}} {{recipe.votes}}
+{{recipe.type}} {{recipe.user}} {{recipe.ingredients}} {{recipe.instructions}} {% endfor %} {% endblock %}

@@ -1,0 +1,35 @@
+.nav-wrapper .brand-logo {
+    font-size: 1.6rem;
+    display: inline-table;
+}
+
+#recipe-search-box {
+    margin-left: 2%;
+    margin-bottom: 2%;
+}
+
+#ingredient-search-box {
+    margin-left: 12.8%;
+    margin-bottom: 2%;
+}
+
+.search-button {
+    margin: 2%;
+}
+
+#filter-section .z-depth-2 {
+    margin: 0 2%;
+    padding: 0.75rem;
+    padding-top: 4%;
+}
+
+
+@media (max-width: 600px) {
+    #recipe-search-box, #ingredient-search-box {
+        margin-left: 0;
+        margin-bottom: 15px;
+    }
+    #filter-section .z-depth-2 {
+        margin: 0;
+    }
+}
