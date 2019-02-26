@@ -1,7 +1,48 @@
+/* Nav */
+
 .nav-wrapper .brand-logo {
     font-size: 1.6rem;
     display: inline-table;
 }
+
+/* Home page*/
+
+#home-page {
+    height: 500px;
+}
+
+.bg-img {
+    height: 100%;
+    background: url(../images/stock-photo-herbs-and-spices-frame-over-black-stone-background-top-view-with-copy-space-3702987.jpg) no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.block {
+    display: grid;
+    color: white;
+}
+
+.center-div {
+    position: absolute;
+    margin: auto;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+    height: 250px;
+    width: 80%;
+    border: dashed white 1px;
+}
+
+.menu-button {
+    width: max-content;
+    margin: auto;
+}
+
+/* Search boxes */
 
 #recipe-search-box {
     margin-left: 1%;
@@ -17,15 +58,19 @@
     margin: 2%;
 }
 
+/* Filter section */
+
 #filter-section .z-depth-2 {
     margin: 0 1%;
     padding: 0.75rem;
     padding-top: 4%;
 }
 
+/* Media queries */
 
 @media (max-width: 600px) {
-    #recipe-search-box, #ingredient-search-box {
+    #recipe-search-box,
+    #ingredient-search-box {
         margin-left: 0;
         margin-bottom: 15px;
     }
