@@ -10,13 +10,36 @@ app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
 
 mongo = PyMongo(app)
 
+## ------- collections --------
+
+allergins = mongo.db.allergins 
+authors = mongo.db.authors
+categories=mongo.db.categories
+cuisines = mongo.db.cuisines
+countries = mongo.db.countries
+diets = mongo.db.diets
+origins=mongo.db.origins
+recipes = mongo.db.recipes
+types=mongo.db.types
+
+## ------- routes -------
+
 @app.route('/')
 @app.route('/get_recipes')
 def get_recipes():
-    return render_template('recipes.html', recipes=mongo.db.recipes.find(), 
-    authors=mongo.db.authors.find(), allergins=mongo.db.allergins.find(), types=mongo.db.types.find(),
-    countries=mongo.db.countries.find(), cuisines=mongo.db.cuisines.find(), diets=mongo.db.diets.find(),
-    origins=mongo.db.origins.find(), categories=mongo.db.categories.find())
+    '''
+        gets the collections from MongoDB Atlas and renders them on the recipes.html page
+    '''
+    return render_template('recipes.html', recipes=recipes.find(), 
+    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
+    origins=origins.find(), categories=categories.find())
+    
+@app.route('/search_recipes', methods=['POST'])
+def search_recipes():
+    user_input = request.form['recipe_name']
+    recipes.create_index([('name', 'text')])
+    return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}))
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),

@@ -4,10 +4,10 @@
         <div class="row">
             <!--Recipe name search-->
             <div id="recipe-search-box" class="col s12 m5 z-depth-2 ">
-                <form>
+                <form action="{{ url_for('search_recipes') }}" method="POST">
                     <div class="input-field">
-                        <input id="icon_prefix" type="text" class="validate">
-                        <label for="icon_prefix">Recipe Name</label>
+                        <input id="recipe_name" name="recipe_name" type="text" class="validate">
+                        <label for="recipe_name">Recipe Name</label>
                         <button class="btn waves-effect waves-light right search-button" type="submit" name="action">Recipe Name Search<i class="material-icons right">search</i></button>
                     </div>
                 </form>
@@ -15,10 +15,10 @@
 
             <!--Ingredients search-->
             <div id="ingredient-search-box" class="col s12 m5 z-depth-2 ">
-                <form>
+                <form action="" method="POST">
                     <div class="input-field">
-                        <input id="icon_prefix" type="text" class="validate">
-                        <label for="icon_prefix">Ingredient</label>
+                        <input id="ingredient_name" name="ingredient_name" type="text" class="validate">
+                        <label for="ingredient_name">Ingredient</label>
                         <button class="btn waves-effect waves-light right search-button" type="submit" name="action">Ingredient Search<i class="material-icons right">search</i></button>
                     </div>
                 </form>
@@ -113,5 +113,26 @@
     </div>
 </section>
 
-{% for recipe in recipes %} {{recipe.name}} {{recipe.description}} {{recipe.prep_time}} {{recipe.cooking_time}} {{recipe.servings}} {{recipe.diet}} {{recipe.category}} {{recipe.origin}} {{recipe.cuisine}} {{recipe.author}} {{recipe.image}} {{recipe.votes}}
-{{recipe.type}} {{recipe.user}} {{recipe.ingredients}} {{recipe.instructions}} {% endfor %} {% endblock %}
+<section id="recipes">
+    <div class="row">
+        {% for recipe in recipes %}
+        <div class="col s12 m4">
+            <div class="card">
+                <div class="card-image">
+                    <img src="{{recipe.image}}">
+                    <span class="card-title">{{recipe.name}}</span>
+                    <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                </div>
+                <div class="card-content">
+                    <p>{{recipe.description}}</p>
+                </div>
+                <div class="card-action">
+                    <a href="#">{{recipe.diet}}</a>
+                    <a class="right" href="#">{{recipe.votes}}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

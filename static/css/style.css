@@ -4,12 +4,12 @@
 }
 
 #recipe-search-box {
-    margin-left: 2%;
+    margin-left: 1%;
     margin-bottom: 2%;
 }
 
 #ingredient-search-box {
-    margin-left: 12.8%;
+    margin-left: 14.5%;
     margin-bottom: 2%;
 }
 
@@ -18,7 +18,7 @@
 }
 
 #filter-section .z-depth-2 {
-    margin: 0 2%;
+    margin: 0 1%;
     padding: 0.75rem;
     padding-top: 4%;
 }
