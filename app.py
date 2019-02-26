@@ -25,6 +25,9 @@ types = mongo.db.types
 ## ------- routes -------
 
 @app.route('/')
+def index():
+    return render_template('index.html')
+    
 @app.route('/get_recipes')
 def get_recipes():
     '''
@@ -39,12 +42,18 @@ def get_recipes():
 def search_recipes():
     user_input = request.form['recipe_name']
     recipes.create_index([('name', 'text')])
-    return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}))
+    return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}),
+    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
+    origins=origins.find(), categories=categories.find())
     
 @app.route('/search_ingredients', methods=['POST'])
 def search_ingredients():
     user_input = request.form['ingredient_name']
-    return render_template('recipes.html', recipes=recipes.find({'ingredients': user_input.capitalize()}))
+    return render_template('recipes.html', recipes=recipes.find({'ingredients': user_input.capitalize()}),
+    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
+    origins=origins.find(), categories=categories.find())
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
