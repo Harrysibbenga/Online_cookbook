@@ -20,7 +20,7 @@ countries = mongo.db.countries
 diets = mongo.db.diets
 origins=mongo.db.origins
 recipes = mongo.db.recipes
-types=mongo.db.types
+types = mongo.db.types
 
 ## ------- routes -------
 
@@ -40,6 +40,11 @@ def search_recipes():
     user_input = request.form['recipe_name']
     recipes.create_index([('name', 'text')])
     return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}))
+    
+@app.route('/search_ingredients', methods=['POST'])
+def search_ingredients():
+    user_input = request.form['ingredient_name']
+    return render_template('recipes.html', recipes=recipes.find({'ingredients': user_input.capitalize()}))
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
