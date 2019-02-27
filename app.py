@@ -65,6 +65,7 @@ def filter_search():
     diet_input = request.form.get('diet_name')
     origin_input = request.form.get('origin_name')
     category_input = request.form.get('category_name')
+    country_input = request.form.get('country_name')
 
 ## ----- Queries -------
     allergin_q = {'allergins': allergin_input}
@@ -74,6 +75,7 @@ def filter_search():
     diet_q = {'diet': diet_input}
     origin_q = {'origin': origin_input}
     type_q = {'type': type_input}
+    country_q = {'country': country_input}
     
     if allergin_input != None:
         recipe = recipes.find(allergin_q)
@@ -116,7 +118,15 @@ def filter_search():
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
-
+    
+    elif country_input != None:
+        found_authors = authors.find(country_q)
+        for author in found_authors:
+            recipe = recipes.find({'author': author['name']})
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
         port=int(os.environ.get('PORT')),

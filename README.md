@@ -17,6 +17,8 @@ Filter search
 * To take the filter to the next level would be to filter and only find results that match both or all queries selected but i 
 found this difficult unless i used text indexing which i had used on the recipe search but found it hard to implement on other searches at the same time.
 * filter search lookes for any recipes that have the chosen fields and displays them.
+* test was done manually to make sure that what ever was filtered through displayed. 
+
 
 ## Credits
 
