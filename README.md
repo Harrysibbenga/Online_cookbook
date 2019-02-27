@@ -13,6 +13,11 @@ Used Text index's to to support text search queries on string content.
 
 Queryed the ingresdients array to seach for the data with the specific user input value.
 
+Filter search
+* To take the filter to the next level would be to filter and only find results that match both or all queries selected but i 
+found this difficult unless i used text indexing which i had used on the recipe search but found it hard to implement on other searches at the same time.
+* filter search lookes for any recipes that have the chosen fields and displays them.
+
 ## Credits
 
 *[Title page background image](https://www.shutterstock.com/image-photo/kitchen-cooking-utensils-ceramic-storage-pot-327210395?src=w9EwWJ6WlsWUoHoxjA7O-g-1-1)

@@ -30,11 +30,11 @@
 <section id="filter-section">
     <div class="section">
         <div class="row">
-            <form class="z-depth-2">
+            <form class="z-depth-2" method="POST" action ="{{ url_for('filter_search') }}">
                 <div class="row">
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="allergin_name">
+                            <option disabled selected>Choose your option</option>
                             {% for allergin in allergins %}
                               <option value='{{allergin.name}}'>{{allergin.name}}</option>
                             {% endfor %}
@@ -42,8 +42,8 @@
                         <label>Allergins</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="author_name">
+                            <option disabled selected>Choose your option</option>
                             {% for author in authors %}
                               <option value='{{author.name}}'>{{author.name}}</option>
                             {% endfor %}
@@ -51,8 +51,8 @@
                         <label>Authors</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="country_name">
+                            <option disabled selected>Choose your option</option>
                             {% for country in countries %}
                                 <option value='{{country.name}}'>{{country.name}}</option>
                             {% endfor %}
@@ -60,8 +60,8 @@
                         <label>Authors Origin</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="category_name">
+                            <option disabled selected>Choose your option</option>
                             {% for category in categories %}
                                 <option value='{{category.name}}'>{{category.name}}</option>
                             {% endfor %}
@@ -71,8 +71,8 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="cuisine_name">
+                            <option disabled selected>Choose your option</option>
                             {% for cuisine in cuisines %}
                                 <option value='{{cuisine.name}}'>{{cuisine.name}}</option>
                             {% endfor %}
@@ -80,8 +80,8 @@
                         <label>Cuisines</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="diet_name">
+                            <option disabled selected>Choose your option</option>
                             {% for diet in diets %}
                                 <option value='{{diet.name}}'>{{diet.name}}</option>
                             {% endfor %}
@@ -89,8 +89,8 @@
                         <label>Diet</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="origin_name">
+                            <option disabled selected>Choose your option</option>
                             {% for origin in origins %}
                                 <option value='{{origin.name}}'>{{origin.name}}</option>
                             {% endfor %}
@@ -98,8 +98,8 @@
                         <label>Origin</label>
                     </div>
                     <div class="input-field col s3">
-                        <select>
-                            <option value="" disabled selected>Choose your option</option>
+                        <select name="type_name">
+                            <option disabled selected>Choose your option</option>
                             {% for type in types %}
                                 <option value='{{type.name}}'>{{type.name}}</option>
                             {% endfor %}

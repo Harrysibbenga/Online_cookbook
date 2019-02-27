@@ -49,11 +49,73 @@ def search_recipes():
     
 @app.route('/search_ingredients', methods=['POST'])
 def search_ingredients():
-    user_input = request.form['ingredient_name']
-    return render_template('recipes.html', recipes=recipes.find({'ingredients': user_input.capitalize()}),
+    ingredient_input = request.form['ingredient_name']
+    return render_template('recipes.html', recipes=recipes.find({'ingredients': ingredient_input.capitalize()}), 
     authors=authors.find(), allergins=allergins.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
+    
+@app.route('/filter_search', methods=['POST'])
+def filter_search():
+## ----- Inputs ------    
+    allergin_input = request.form.get('allergin_name')
+    author_input = request.form.get('author_name')
+    type_input = request.form.get('type_name')
+    cuisine_input = request.form.get('cuisine_name')
+    diet_input = request.form.get('diet_name')
+    origin_input = request.form.get('origin_name')
+    category_input = request.form.get('category_name')
+
+## ----- Queries -------
+    allergin_q = {'allergins': allergin_input}
+    author_q = {'author': author_input}
+    category_q = {'category': category_input}
+    cuisine_q = {'cuisine': cuisine_input}
+    diet_q = {'diet': diet_input}
+    origin_q = {'origin': origin_input}
+    type_q = {'type': type_input}
+    
+    if allergin_input != None:
+        recipe = recipes.find(allergin_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif author_input != None:
+        recipe = recipes.find(author_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif category_input != None:
+        recipe = recipes.find(category_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif cuisine_input != None:
+        recipe = recipes.find(cuisine_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif diet_input != None:
+        recipe = recipes.find(diet_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif origin_input != None:
+        recipe = recipes.find(origin_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    
+    elif type_input != None:
+        recipe = recipes.find(type_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
