@@ -12,3 +12,8 @@ Had to make sure the ingredient names entered were capitalized as they are in th
 Used Text index's to to support text search queries on string content.
 
 Queryed the ingresdients array to seach for the data with the specific user input value.
+
+## Credits
+
+*[Title page background image](https://www.shutterstock.com/image-photo/kitchen-cooking-utensils-ceramic-storage-pot-327210395?src=w9EwWJ6WlsWUoHoxjA7O-g-1-1)
+*[Eggs and Toast](https://image.shutterstock.com/image-photo/sandwich-avocado-fried-egg-on-450w-346094294.jpg)

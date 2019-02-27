@@ -5,6 +5,10 @@
     display: inline-table;
 }
 
+.nav-wrapper ul a:hover {
+    background-color: #c62828;
+}
+
 /* Home page*/
 
 #home-page {
@@ -12,34 +16,39 @@
 }
 
 .bg-img {
+    display: block;
+    width: 100%;
     height: 100%;
-    background: url(../images/stock-photo-herbs-and-spices-frame-over-black-stone-background-top-view-with-copy-space-3702987.jpg) no-repeat center center;
+    background: url(../images/stock-photo-kitchen-cooking-utensils-in-ceramic-storage-pot-on-a-shelf-on-a-rustic-wooden-wall-space-for-text-327210395.jpg) no-repeat center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 }
 
-.block {
-    display: grid;
-    color: white;
-}
-
 .center-div {
-    position: absolute;
+    position: relative;
     margin: auto;
-    top: 0%;
-    left: 0%;
-    right: 0%;
-    bottom: 0%;
     height: 250px;
     width: 80%;
-    border: dashed white 1px;
+    top: 30%;
 }
 
 .menu-button {
     width: max-content;
     margin: auto;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    color: white;
+    font-size: 1.25rem;
+    padding: 20px;
+    text-align: center;
 }
 
 /* Search boxes */
