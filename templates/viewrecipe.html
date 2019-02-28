@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="recipe-name">{{recipe.name}}</h1>
+<section>
+    <div class="row">
+        <div class="recipe-image-container col s12 l6">
+            <img class="img-dimentions" src="{{recipe.image}}"></img>
+        </div>
+        <div class="col s12 l6">
+            <p class="recipe-description center-align z-depth-3">{{recipe.description}}</p>
+            <div class="info-section z-depth-3 center-align">
+                <div class="row">
+                    <div class="col s4">
+                        <p>Prep time: {{recipe.prep_time}}</p>
+                    </div>
+                    <div class="col s4">
+                        <p>Category: {{recipe.category}}</p>
+                    </div>
+                    <div class="col s4">
+                        <p>Diet: {{recipe.diet}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s4">
+                        <p>Cooking time: {{recipe.cooking_time}}</p>
+                    </div>
+                    <div class="col s4">
+                        <p>Cuisine: {{recipe.cuisine}}</p>
+                    </div>
+                    <div class="col s4">
+                        <p>Type: {{recipe.type}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s4">
+                        <p>Servings: {{recipe.servings}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="allergins-section" class="section">
+    
+</section>
+
+{% endblock %}
