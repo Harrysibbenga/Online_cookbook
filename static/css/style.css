@@ -77,10 +77,6 @@
 
 /* View recipe page*/
 
-.recipe-name {
-    margin-left: 0.5rem;
-}
-
 .recipe-image-container {
     margin: auto;
 }
@@ -97,7 +93,11 @@
     padding: 1rem;
 }
 
-.info-section {
+.section-title{
+    margin-left: 1rem;
+}
+
+.allergins-section,.info-section,.ingredients-section,.instructions-section {
     padding: 1rem;
 }
 /* Media queries */
