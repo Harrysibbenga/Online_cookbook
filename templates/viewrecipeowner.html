@@ -43,6 +43,8 @@
                         <p>User: {{recipe.user}}</p>
                     </div>
                 </div>
+                <a class="btn-floating pulse" href=""><i class="medium material-icons">edit</i></a>
+                <a class="btn-floating pulse" href=""><i class="medium material-icons">delete</i></a>
                 <a class="btn-floating pulse" href=""><i class="medium material-icons">star</i></a>
             </div>
         </div>
@@ -57,8 +59,11 @@
                 <div class="row">
                     <ol>
                         {% for allergin in recipe.allergins %}
-                        <li class="col s12 l4">
-                            <p>{{allergin}}</p>
+                        <li class="col s12">
+                            <p>{{allergin}}
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
+                            </p>
                         </li>
                         {% endfor %}
                     </ol>
@@ -71,8 +76,11 @@
                 <div class="row">
                     <ol>
                         {% for ingredient in recipe.ingredients %}
-                        <li class="col s12 l4">
-                            <p>{{ingredient}}</p>
+                        <li class="col s12">
+                            <p>{{ingredient}}
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
+                            </p>
                         </li>
                         {% endfor %}
                     </ol>
@@ -92,6 +100,8 @@
                         {% for instruction in recipe.instructions %}
                         <li class="col s12">
                             <p>{{instruction}}
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
+                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}

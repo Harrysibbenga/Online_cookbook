@@ -96,10 +96,13 @@
 .section-title{
     margin-left: 1rem;
 }
-
-.allergins-section,.info-section,.ingredients-section,.instructions-section {
+.allergins-section {
+    margin-bottom: 1rem;
+} 
+.instructions-section,.info-section,.ingredients-section,.allergins-section {
     padding: 1rem;
 }
+
 /* Media queries */
 
 @media (max-width: 600px) {

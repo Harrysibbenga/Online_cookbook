@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, session
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 
@@ -127,10 +127,15 @@ def filter_search():
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
         
-@app.route('/view_recipe/<recipe_id>')
-def view_recipe(recipe_id):
+@app.route('/view_recipe/<recipe_id>/<username>')
+def view_recipe(recipe_id, username):
     the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
-    return render_template('viewrecipe.html', recipe=the_recipe)
+    if username == "no-user":
+        return render_template('viewrecipe.html', recipe=the_recipe)
+    elif username == "Admin" or username == the_recipe['user']:
+        return render_template('viewrecipeowner.html', recipe=the_recipe)
+    else:
+        return render_template('viewrecipe.html', recipe=the_recipe)
         
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
