@@ -29,7 +29,6 @@ users = mongo.db.users
 
 @app.route('/')
 def index():
-    session.pop('username', None)
     return render_template('index.html')
     
 
@@ -203,17 +202,23 @@ def login(recipe_id):
            session['username'] = username_input
            if recipe_id == 'no_id':
                return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
+           elif recipe_id == 'home':
+               return redirect(url_for("get_recipes"))
            else:
                return redirect(url_for("save_recipe", recipe_id=recipe_id, username=session['username']))
     else:
         return render_template("login.html", recipe_id=recipe_id)
-
+        
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 @app.route('/register')
 def register():
     return render_template("register.html")
-
-
+    
+    
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),

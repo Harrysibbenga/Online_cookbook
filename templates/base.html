@@ -30,7 +30,11 @@
                 <li><a class="btn-floating pulse" href=""><i class="material-icons">add</i></a>Add Recipe</li>
                 <li><a href="">Manage Categories</a></li>
                 <li><a href="">Dashboard</a></li>
-                <li><a href="">Login</a></li>
+                {% if session.username %}
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+                {% else %}
+                <li><a href="{{url_for('login', recipe_id='home')}}">Login</a></li>
+                {% endif %}
             </ul>
         </div>
         <ul class="sidenav show-on-med-and-down" id="slide-out">
@@ -47,7 +51,11 @@
             <li><a href=""><i class="material-icons">add_circle</i>Add Recipe</a></li>
             <li><a href=""><i class="material-icons">settings_application</i>Manage Categories</a></li>
             <li><a href=""><i class="material-icons">dashboard</i>Dashboard</a></li>
-            <li><a href=""><i class="material-icons">fingerprint</i>Login</a></li>
+            {% if session.username %}
+            <li><a href="{{url_for('logout')}}"><i class="material-icons">fingerprint</i>Logout</a></li>
+            {% else %}
+            <li><a href="{{url_for('login', recipe_id='home')}}"><i class="material-icons">fingerprint</i>Login</a></li>
+            {% endif %}
         </ul>
     </nav>
 
