@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block content %}
+<section id="recipes">
+    <div class="row">
+        {% for recipe in recipes %}
+        <div class="col s12 m6 l4">
+            <div class="card">
+                <div class="card-image">
+                    <img src="{{recipe.image}}">
+                    <span class="card-title">{{recipe.name}}</span>
+                    <!-- If user is in session -->
+                    {% if session.username %}
+                        <a href="{{ url_for('view_recipe', recipe_id=recipe._id, username=session.username) }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                    <!-- User is not logged in -->
+                    {% else %}
+                        <a href="{{ url_for('view_recipe', recipe_id='no_id', username='no_user') }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                    {% endif %}
+                </div>
+                <div class="card-content">
+                    <p>{{recipe.description}}</p>
+                </div>
+                <div class="card-action">
+                    <a href="#">{{recipe.diet}}</a>
+                    <a href="#" class="right">Votes {{recipe.votes}}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

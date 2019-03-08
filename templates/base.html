@@ -21,9 +21,12 @@
                 {% if session.username %}
                 <li><a href="{{ url_for('saved_recipes', username=session.username, recipe_id='no_id') }}">Saved Recipes</a></li>
                 {% else %}
-                <li><a href="{{ url_for('saved_recipes', username='no-user', recipe_id='no_id') }}">Saved Recipes</a></li>
+                <li><a href="{{ url_for('saved_recipes', username='no_user', recipe_id='no_id') }}">Saved Recipes</a></li>
+                {% endif %} {% if session.username %}
+                <li><a href="{{ url_for('view_recipes', username=session.username, recipe_id='no_id') }}">View Recipes</a></li>
+                {% else %}
+                <li><a href="{{ url_for('view_recipes', username='no_user', recipe_id='no_id') }}">View Recipes</a></li>
                 {% endif %}
-                <li><a href="">View Recipes</a></li>
                 <li><a class="btn-floating pulse" href=""><i class="material-icons">add</i></a>Add Recipe</li>
                 <li><a href="">Manage Categories</a></li>
                 <li><a href="">Dashboard</a></li>
@@ -33,11 +36,14 @@
         <ul class="sidenav show-on-med-and-down" id="slide-out">
             <li><a href="{{ url_for('get_recipes') }}"><i class="material-icons">view_list</i>Menu</a></li>
             {% if session.username %}
-            <li><a href="{{ url_for('saved_recipes', username=session.username, recipe_id='no_id') }}">Saved Recipes</a></li>
+            <li><a href="{{ url_for('saved_recipes', username=session.username, recipe_id='no_id') }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
             {% else %}
-            <li><a href="{{ url_for('saved_recipes', username='no-user', recipe_id='no_id') }}">Saved Recipes</a></li>
+            <li><a href="{{ url_for('saved_recipes', username='no_user', recipe_id='no_id') }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
+            {% endif %} {% if session.username %}
+            <li><a href="{{ url_for('view_recipes', username=session.username, recipe_id='no_id') }}"><i class="material-icons">book</i>View Recipes</a></li>
+            {% else %}
+            <li><a href="{{ url_for('view_recipes', username='no_user', recipe_id='no_id') }}"><i class="material-icons">book</i>View Recipes</a></li>
             {% endif %}
-            <li><a href=""><i class="material-icons">book</i>View Recipes</a></li>
             <li><a href=""><i class="material-icons">add_circle</i>Add Recipe</a></li>
             <li><a href=""><i class="material-icons">settings_application</i>Manage Categories</a></li>
             <li><a href=""><i class="material-icons">dashboard</i>Dashboard</a></li>
