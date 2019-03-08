@@ -122,8 +122,8 @@
                     <img src="{{recipe.image}}">
                     <span class="card-title">{{recipe.name}}</span>
                     <!-- If user is in session -->
-                    {% if session['username'] %}
-                        <a href="{{ url_for('view_recipe', recipe_id=recipe._id, username=session['username']) }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                    {% if session.username %}
+                        <a href="{{ url_for('view_recipe', recipe_id=recipe._id, username=session.username) }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
                     <!-- User is not logged in -->
                     {% else %}
                         <a href="{{ url_for('view_recipe', recipe_id=recipe._id, username='no-user') }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>

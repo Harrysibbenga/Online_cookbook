@@ -43,7 +43,11 @@
                         <p>User: {{recipe.user}}</p>
                     </div>
                 </div>
-                <a class="btn-floating pulse" href=""><i class="medium material-icons">star</i></a>
+                {% if session.username %}
+                    <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">star</i></a>
+                {% else %}
+                    <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username='no-user') }}"><i class="medium material-icons">star</i></a>
+                {% endif %}
             </div>
         </div>
     </div>
