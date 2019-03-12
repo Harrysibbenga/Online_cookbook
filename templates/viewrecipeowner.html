@@ -45,8 +45,25 @@
                 </div>
                 <a class="btn-floating pulse" href=""><i class="medium material-icons">edit</i></a>
                 <a class="btn-floating pulse" href=""><i class="medium material-icons">delete</i></a>
-                <a class="btn-floating pulse" href=""><i class="medium material-icons">star</i></a>
+                <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">star</i></a>
             </div>
+            {% if message %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{message}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{message}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>

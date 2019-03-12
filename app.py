@@ -158,7 +158,7 @@ def view_recipe(recipe_id, username):
         
 
 
-@app.route('/save_recipe/<recipe_id>/<username>')
+@app.route('/save_recipe/<recipe_id>/<username>/')
 def save_recipe(recipe_id, username):
     if username == "no_user":
         return redirect(url_for('login', recipe_id=recipe_id))
@@ -166,9 +166,14 @@ def save_recipe(recipe_id, username):
         recipes.update({'_id': ObjectId(recipe_id) }, {'$inc': {'votes': 1 }})
         user = users.find_one({'username': username})
         users.update({'_id': user['_id']}, {'$addToSet': {"saved_recipes": ObjectId(recipe_id)}})
-        the_recipe = recipes.find_one({"_id": ObjectId(recipe_id)})
         message = "Recipe saved to favorites"
-        return render_template("viewrecipe.html", username=username, recipe_id=recipe_id, message=message, recipe=the_recipe)
+        the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
+        if username == "Admin" or username == the_recipe['user']:
+            return render_template('viewrecipeowner.html', recipe=the_recipe, message=message, 
+            recipe_id=recipe_id, username=username)
+        else:
+            return render_template('viewrecipe.html', recipe=the_recipe, message=message, 
+            recipe_id=recipe_id, username=username)
             
 
 
