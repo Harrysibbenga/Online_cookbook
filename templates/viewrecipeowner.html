@@ -43,7 +43,7 @@
                         <p>User: {{recipe.user}}</p>
                     </div>
                 </div>
-                <a class="btn-floating pulse" href=""><i class="medium material-icons">edit</i></a>
+                <a class="btn-floating pulse" href="{{ url_for('edit_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">edit</i></a>
                 <a class="btn-floating pulse" href=""><i class="medium material-icons">delete</i></a>
                 <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">star</i></a>
             </div>

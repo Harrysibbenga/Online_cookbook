@@ -25,11 +25,15 @@ users = mongo.db.users
 
 ## ------- functions -------
 
-def verify_username(user_input, colection):
-    for user in colection:
+def find_user(user_input, coll):
+    """
+    Used to look through a collection to verify that the username is in there and to return the user
+    """
+    for user in coll:
         if user['username'] == user_input:
             user = users.find_one({"username": user_input})
             return user
+        
 
 ## ------- routes -------
 
@@ -74,6 +78,9 @@ def search_ingredients():
 
 @app.route('/filter_search', methods=['POST'])
 def filter_search():
+    """
+    
+    """
 ## ----- Inputs ------    
     allergin_input = request.form.get('allergin_name')
     author_input = request.form.get('author_name')
@@ -152,9 +159,9 @@ def view_recipe(recipe_id, username):
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe)
     elif username == "Admin" or username == the_recipe['user']:
-        return render_template('viewrecipeowner.html', recipe=the_recipe)
+        return render_template('viewrecipeowner.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
     else:
-        return render_template('viewrecipe.html', recipe=the_recipe)
+        return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
         
 
 
@@ -169,11 +176,9 @@ def save_recipe(recipe_id, username):
         message = "Recipe saved to favorites"
         the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
         if username == "Admin" or username == the_recipe['user']:
-            return render_template('viewrecipeowner.html', recipe=the_recipe, message=message, 
-            recipe_id=recipe_id, username=username)
+            return render_template('viewrecipeowner.html', recipe=the_recipe, message=message )
         else:
-            return render_template('viewrecipe.html', recipe=the_recipe, message=message, 
-            recipe_id=recipe_id, username=username)
+            return render_template('viewrecipe.html', recipe=the_recipe, message=message )
             
 
 
@@ -183,11 +188,11 @@ def saved_recipes(recipe_id, username):
         return redirect(url_for('login', recipe_id=recipe_id))
     else:
         user = users.find_one({'username': username})
+        all_recipes = recipes.find()
         recipes_saved = []
-        rs = recipes.find()
-        for r in rs:
-            if r['_id'] in user['saved_recipes']:
-                recipes_saved.append(r)
+        for recipe in all_recipes:
+            if recipe['_id'] in user['saved_recipes']:
+                recipes_saved.append(recipe)
         return render_template("savedrecipes.html", recipes=recipes_saved)
         
 
@@ -197,20 +202,44 @@ def view_recipes(recipe_id, username):
         return redirect(url_for('login', recipe_id=recipe_id))
     else:
         recipes_created = []
-        rs = recipes.find()
-        for r in rs:
-            if r['user'] == username:
-                recipes_created.append(r)
+        all_recipes = recipes.find()
+        for recipe in all_recipes:
+            if recipe['user'] == username:
+                recipes_created.append(recipe)
         return render_template("viewrecipes.html", recipes=recipes_created)
 
+@app.route('/edit_recipe/<recipe_id>/<username>')
+def edit_recipe(recipe_id, username):
+    the_recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+    return render_template("editrecipe.html", recipe_id=recipe_id, recipe=the_recipe, username=username, authors=authors.find(), 
+    allergins=allergins.find(), types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+    diets=diets.find(), origins=origins.find(), categories=categories.find())
+
+@app.route('/update_recipe/<recipe_id>/<username>', methods=['POST'])
+def update_recipe(recipe_id, username):
+    recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$set':
+        {
+            'name':request.form.get('name'),
+            'description':request.form.get('description'),
+            'prep_time': request.form.get('prep_time'),
+            'cooking_time': request.form.get('cooking_time'),
+            'servings':request.form.get('servings'),
+            'category': request.form.get('category'),
+            'diet': request.form.get('diet'),
+            'cuisine':request.form.get('cuisine'),
+            'type': request.form.get('type'),
+            'author': request.form.get('author'),
+            'origin':request.form.get('origin')
+        }})
+    return redirect(url_for('get_recipes'))
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
     if request.method == "POST":
         username_input = request.form.get('username')
         password_input = request.form.get('password')
-        user_find = users.find()
-        user = verify_username(username_input, user_find)
+        all_users = users.find()
+        user = find_user(username_input, all_users)
         if user == None:
             message = "User dosen't exist"
             return render_template("login.html", recipe_id=recipe_id, message=message)
@@ -234,7 +263,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=['POST'])
 def register():
     if request.method == "POST":
         username_input = request.form.get('username')
@@ -254,7 +283,7 @@ def register():
     else:
         return render_template("register.html")
     
-    
+
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
