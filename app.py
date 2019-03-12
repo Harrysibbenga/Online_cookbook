@@ -23,9 +23,15 @@ recipes = mongo.db.recipes
 types = mongo.db.types
 users = mongo.db.users
 
+## ------- functions -------
+
+def verify_username(user_input, colection):
+    for user in colection:
+        if user['username'] == user_input:
+            user = users.find_one({"username": user_input})
+            return user
+
 ## ------- routes -------
-
-
 
 @app.route('/')
 def index():
@@ -160,7 +166,9 @@ def save_recipe(recipe_id, username):
         recipes.update({'_id': ObjectId(recipe_id) }, {'$inc': {'votes': 1 }})
         user = users.find_one({'username': username})
         users.update({'_id': user['_id']}, {'$addToSet': {"saved_recipes": ObjectId(recipe_id)}})
-        return redirect(url_for("saved_recipes", username=username, recipe_id=recipe_id))
+        the_recipe = recipes.find_one({"_id": ObjectId(recipe_id)})
+        message = "Recipe saved to favorites"
+        return render_template("viewrecipe.html", username=username, recipe_id=recipe_id, message=message, recipe=the_recipe)
             
 
 
@@ -183,31 +191,38 @@ def view_recipes(recipe_id, username):
     if username == "no_user" and recipe_id == "no_id":
         return redirect(url_for('login', recipe_id=recipe_id))
     else:
-        recipes_saved = []
+        recipes_created = []
         rs = recipes.find()
         for r in rs:
             if r['user'] == username:
-                recipes_saved.append(r)
-        return render_template("viewrecipes.html", recipes=recipes_saved)
-            
-            
+                recipes_created.append(r)
+        return render_template("viewrecipes.html", recipes=recipes_created)
+
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
     if request.method == "POST":
         username_input = request.form.get('username')
         password_input = request.form.get('password')
-        user = users.find_one({'username': username_input, 'password': password_input})
-        if user:
-           session['username'] = username_input
-           if recipe_id == 'no_id':
-               return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
-           elif recipe_id == 'home':
-               return redirect(url_for("get_recipes"))
-           else:
-               return redirect(url_for("save_recipe", recipe_id=recipe_id, username=session['username']))
+        user_find = users.find()
+        user = verify_username(username_input, user_find)
+        if user == None:
+            message = "User dosen't exist"
+            return render_template("login.html", recipe_id=recipe_id, message=message)
+        elif user['password'] == password_input:
+            session['username'] = username_input
+            if recipe_id == 'no_id':
+                return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
+            elif recipe_id == 'home':
+                return redirect(url_for("get_recipes"))
+            else:
+                return redirect(url_for("save_recipe", recipe_id=recipe_id, username=session['username']))
+        else:
+            message = "Incorrect password"
+            return render_template("login.html", recipe_id=recipe_id, message=message)
     else:
         return render_template("login.html", recipe_id=recipe_id)
+        
         
 @app.route('/logout')
 def logout():
