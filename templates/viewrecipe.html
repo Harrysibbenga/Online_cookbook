@@ -4,6 +4,8 @@
         <div class="col s12 m10 offset-m1 l12">
             <h1 class="recipe-name">{{recipe.name}}</h1>
         </div>
+    </div>
+    <div class="row">
         <div class="recipe-image-container col s12 m10 offset-m1 l6">
             <img class="img-dimentions" src="{{recipe.image}}"></img>
         </div>
@@ -44,11 +46,26 @@
                     </div>
                 </div>
                 {% if session.username %}
-                    <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">star</i></a>
-                {% else %}
-                    <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username='no_user') }}"><i class="medium material-icons">star</i></a>
-                {% endif %}
+                <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username=session.username) }}"><i class="medium material-icons">star</i></a> {% else %}
+                <a class="btn-floating pulse" href="{{ url_for('save_recipe', recipe_id=recipe._id, username='no_user') }}"><i class="medium material-icons">star</i></a> {% endif %}
             </div>
+            {% if message %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{message}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{message}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
