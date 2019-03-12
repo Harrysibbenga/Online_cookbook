@@ -214,9 +214,25 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
-@app.route('/register')
+@app.route('/register', methods=['GET','POST'])
 def register():
-    return render_template("register.html")
+    if request.method == "POST":
+        username_input = request.form.get('username')
+        password_input = request.form.get('password')
+        confirmation = request.form.get('confirm_password')
+        user = users.find_one({'username': username_input})
+        if user:
+            message = "User already exists"
+            return render_template('register.html', message=message)
+        elif password_input == confirmation:
+            users.insert_one({'username': username_input, 'password': password_input, 'saved_recipes': []})
+            message = "User created please login"
+            return render_template('register.html', message=message)
+        else:
+            message = "Password mismatch"
+            return render_template('register.html', message=message)
+    else:
+        return render_template("register.html")
     
     
 
