@@ -111,7 +111,11 @@
 /* Login/ Register*/
 
 .login-button {
-    margin: 0 1rem 2rem;
+    margin: 1rem 0;
+}
+
+.message-container {
+    margin-top: 3rem;
 }
 
 /* Media queries */
@@ -124,5 +128,8 @@
     }
     #filter-section .z-depth-2 {
         margin: 0;
+    }
+    .message-container {
+        margin-top: 1rem;
     }
 }
