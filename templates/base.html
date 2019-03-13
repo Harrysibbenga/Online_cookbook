@@ -22,13 +22,11 @@
                 <li><a href="{{ url_for('saved_recipes', username=session.username, recipe_id='no_id') }}">Saved Recipes</a></li>
                 {% else %}
                 <li><a href="{{ url_for('saved_recipes', username='no_user', recipe_id='no_id') }}">Saved Recipes</a></li>
-                {% endif %} 
-                {% if session.username %}
+                {% endif %} {% if session.username %}
                 <li><a href="{{ url_for('view_recipes', username=session.username, recipe_id='no_id') }}">View Recipes</a></li>
                 {% else %}
                 <li><a href="{{ url_for('view_recipes', username='no_user', recipe_id='no_id') }}">View Recipes</a></li>
-                {% endif %}
-                {% if session.username %}
+                {% endif %} {% if session.username %}
                 <li><a class="btn-floating pulse" href="{{ url_for('add_recipe', username=session.username, recipe_id='no_id') }}"><i class="material-icons">add</i></a>Add Recipe</li>
                 {% else %}
                 <li><a class="btn-floating pulse" href="{{ url_for('add_recipe', username='no_user', recipe_id='add_recipe') }}"><i class="material-icons">add</i></a>Add Recipe</li>
@@ -86,6 +84,9 @@
         });
         $(document).ready(function() {
             $('select').formSelect();
+        });
+        $(document).ready(function() {
+            $('.modal').modal();
         });
         $('#year').text(new Date().getFullYear());
     </script>
