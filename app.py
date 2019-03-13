@@ -212,8 +212,8 @@ def view_recipes(recipe_id, username):
 def edit_recipe(recipe_id, username):
     the_recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
     return render_template("editrecipe.html", recipe_id=recipe_id, recipe=the_recipe, username=username, authors=authors.find(), 
-    allergins=allergins.find(), types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-    diets=diets.find(), origins=origins.find(), categories=categories.find())
+    types=types.find(), countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(), 
+    origins=origins.find(), categories=categories.find())
 
 @app.route('/update_recipe/<recipe_id>/<username>', methods=['POST'])
 def update_recipe(recipe_id, username):
@@ -229,9 +229,47 @@ def update_recipe(recipe_id, username):
             'cuisine':request.form.get('cuisine'),
             'type': request.form.get('type'),
             'author': request.form.get('author'),
-            'origin':request.form.get('origin')
+            'origin':request.form.get('origin'),
+            'image_url':request.form.get('image_url')
         }})
-    return redirect(url_for('get_recipes'))
+    return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
+    
+@app.route('/add_recipe/<recipe_id>/<username>')
+def add_recipe(recipe_id, username):
+    if username == "no_user" and recipe_id == "add_recipe":
+        return redirect(url_for('login', recipe_id=recipe_id))
+    else:
+        return render_template('addrecipe.html', username=username, authors=authors.find(), types=types.find(), 
+        countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
+        categories=categories.find())
+
+@app.route('/create_recipe/<username>', methods=['POST'])
+def create_recipe(username):
+    recipes.insert_one(
+    {
+        'name':request.form.get('name'),
+        'description':request.form.get('description'),
+        'prep_time': request.form.get('prep_time'),
+        'cooking_time': request.form.get('cooking_time'),
+        'servings':request.form.get('servings'),
+        'category': request.form.get('category'),
+        'diet': request.form.get('diet'),
+        'cuisine':request.form.get('cuisine'),
+        'type': request.form.get('type'),
+        'author': request.form.get('author'),
+        'origin':request.form.get('origin'),
+        'image_url':request.form.get('image_url'),
+        'user': username
+    })
+    
+    new_recipe = recipes.find_one({
+        'name':request.form.get('name'),
+        'description':request.form.get('description'),
+        'prep_time': request.form.get('prep_time'),
+        'cooking_time': request.form.get('cooking_time'),
+    })
+    
+    return redirect(url_for('view_recipe', recipe_id=new_recipe['_id'], username=username))
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
@@ -249,6 +287,8 @@ def login(recipe_id):
                 return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
             elif recipe_id == 'home':
                 return redirect(url_for("get_recipes"))
+            elif recipe_id == 'add_recipe':
+                return redirect(url_for('add_recipe', recipe_id=recipe_id, username=session['username']))
             else:
                 return redirect(url_for("save_recipe", recipe_id=recipe_id, username=session['username']))
         else:
