@@ -1,0 +1,112 @@
+{% extends 'base.html' %} {% block content %}
+<section id="addrecipe-page">
+    <div class="row">
+        <div class="col s12">
+            <h1>Add Recipe</h1>
+        </div>
+        <div class="section">
+            <div class="row">
+                <form action="{{ url_for('create_recipe', username=username) }}" method="POST">
+                    <div class="row">
+                        <div class="input-field col s12 m6">
+                            <input id="name" name="name" type="text" class="validate" required>
+                            <label for="name">Recipe Name:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="description" name="description" type="text" class="validate" required>
+                            <label for="description">Description:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <input id="prep-time" name="prep_time" type="text" class="validate" required>
+                            <label for="prep-time">Prep Time:</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="cooking_time" name="cooking_time" type="text" class="validate" required>
+                            <label for="cooking_time">Cooking Time:</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input id="servings" name="servings" type="text" class="validate" required>
+                            <label for="servings">Servings:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <select name="category">
+                            <option disabled selected>Select Category</option>
+                            {% for category in categories %}
+                                <option value='{{category.name}}'>{{category.name}}</option>
+                            {% endfor %}
+                            </select>
+                            <label>Category</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <select name="diet">
+                                <option disabled selected>Select Diet</option>
+                                {% for diet in diets %}
+                                <option value='{{diet.name}}'>{{diet.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Diet</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <select name="cuisine">
+                                <option disabled selected>Select Cuisin</option>
+                                {% for cuisine in cuisines %}
+                                <option value='{{cuisine.name}}'>{{cuisine.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Cuisin</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <select name="type">
+                                <option disabled selected>Select Type</option>
+                                {% for type in types %}
+                                <option value='{{type.name}}'>{{type.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Type</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <select name="author">
+                                <option disabled selected>Select Author</option>
+                                {% for author in authors %}
+                                <option value='{{author.name}}'>{{author.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Author</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <select name="origin">
+                                <option disabled selected >Select Origin</option>
+                                {% for origin in origins %}
+                                <option value='{{origin.name}}'>{{origin.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <label>Origin</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="file-field input-field col s12">
+                            <input class="validate" name="image_url" type="text">
+                            <label for="image_url">Image URL:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col 12">
+                            <button class="btn waves-effect waves-light right" type="submit" name="action">Add Recipe<i class="material-icons right">account_circle</i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
