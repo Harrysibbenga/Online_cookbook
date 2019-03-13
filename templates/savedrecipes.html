@@ -5,7 +5,7 @@
         <div class="col s12 m6 l4">
             <div class="card">
                 <div class="card-image">
-                    <img src="{{recipe.image}}">
+                    <img src="{{recipe.image_url}}">
                     <span class="card-title">{{recipe.name}}</span>
                     <a href="{{ url_for('view_recipe', recipe_id=recipe._id, username=session.username) }}"class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
                 </div>

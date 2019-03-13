@@ -95,18 +95,13 @@
                     </div>
                     <div class="row">
                         <div class="file-field input-field col s12">
-                            <div class="btn">
-                                <span>File</span>
-                                <input type="file" name="image">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" value="{{recipe.image}}" name="image" type="text">
-                            </div>
+                            <input class="validate" value="{{recipe.image_url}}" name="image_url" type="text">
+                            <label for="image_url">Image URL:</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col 12">
-                            <button class="btn waves-effect waves-light right login-button" type="submit" name="action">Update<i class="material-icons right">account_circle</i></button>
+                            <button class="btn waves-effect waves-light right" type="submit" name="action">Update<i class="material-icons right">account_circle</i></button>
                         </div>
                     </div>
                 </form>
