@@ -91,7 +91,7 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <div class="row">
-                                        <div class="col s10">
+                                        <div class="col s11">
                                             <select name="allergin">
                                                 <option disabled selected>Choose your option</option>
                                                 {% for allergin in allergins %}
@@ -99,7 +99,7 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div class="col s2">
+                                        <div class="col s1">
                                             <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
                                         </div>
                                     </div>
@@ -112,7 +112,6 @@
         </div>
         <div class="col s12 m6">
             <div class="z-depth-3 ingredients-section">
-                <a class="btn-floating pulse" href=""><i class="medium material-icons">add</i></a>
                 <h2 class="section-title">Ingredients</h2>
                 <div class="row">
                     <ol>
@@ -126,6 +125,42 @@
                         {% endfor %}
                     </ol>
                 </div>
+                <div class="row">
+                    <div class="col s12">
+                        <form action="{{url_for('add_ingredient', recipe_id=recipe._id, username=session.username)}}" method="POST">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <div class="row">
+                                        <div class="col s11">
+                                            <label for="ingredient">Add Ingredient:</label>
+                                            <input id="ingredient" name="ingredient" type="text" class="validate">
+                                        </div>
+                                        <div class="col s1">
+                                            <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% if ingredient_message %}
+                    <div class="col s12 displayed-message">
+                        <div class="card blue-grey darken-1 message-container">
+                            <div class="card-content white-text center-align">
+                                <p>{{ingredient_message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col s12 hide">
+                        <div class="card blue-grey darken-1 message-container">
+                            <div class="card-content white-text center-align">
+                                <p>{{ingredient_message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -135,7 +170,6 @@
     <div class="row">
         <div class="col s12 m12">
             <div class="z-depth-3 instructions-section">
-                <a class="btn-floating pulse" href=""><i class="medium material-icons">add</i></a>
                 <h2 class="section-title">Instructions</h2>
                 <div class="row">
                     <ol>
@@ -148,6 +182,42 @@
                         </li>
                         {% endfor %}
                     </ol>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <form action="{{url_for('add_instruction', recipe_id=recipe._id, username=session.username)}}" method="POST">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <div class="row">
+                                        <div class="col s11">
+                                            <label for="instruction">Add Instruction:</label>
+                                            <input id="instruction" name="instruction" type="text" class="validate">
+                                        </div>
+                                        <div class="col s1">
+                                            <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% if instruction_message %}
+                    <div class="col s12 displayed-message">
+                        <div class="card blue-grey darken-1 message-container">
+                            <div class="card-content white-text center-align">
+                                <p>{{instruction_message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col s12 hide">
+                        <div class="card blue-grey darken-1 message-container">
+                            <div class="card-content white-text center-align">
+                                <p>{{instruction_message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
