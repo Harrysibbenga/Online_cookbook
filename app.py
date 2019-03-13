@@ -200,6 +200,7 @@ def saved_recipes(recipe_id, username):
         return render_template("savedrecipes.html", recipes=recipes_saved)
         
 
+
 @app.route('/view_recipes/<recipe_id>/<username>')
 def view_recipes(recipe_id, username):
     if username == "no_user" and recipe_id == "no_id":
@@ -212,12 +213,16 @@ def view_recipes(recipe_id, username):
                 recipes_created.append(recipe)
         return render_template("viewrecipes.html", recipes=recipes_created)
 
+
+
 @app.route('/edit_recipe/<recipe_id>/<username>')
 def edit_recipe(recipe_id, username):
     the_recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
     return render_template("editrecipe.html", recipe_id=recipe_id, recipe=the_recipe, username=username, authors=authors.find(), 
     types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
     origins=origins.find(), categories=categories.find())
+
+
 
 @app.route('/update_recipe/<recipe_id>/<username>', methods=['POST'])
 def update_recipe(recipe_id, username):
@@ -238,6 +243,8 @@ def update_recipe(recipe_id, username):
         }})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
     
+
+
 @app.route('/add_recipe/<recipe_id>/<username>')
 def add_recipe(recipe_id, username):
     if username == "no_user" and recipe_id == "add_recipe":
@@ -245,6 +252,8 @@ def add_recipe(recipe_id, username):
     else:
         return render_template('addrecipe.html', username=username, authors=authors.find(), types=types.find(), 
         cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
+
+
 
 @app.route('/create_recipe/<username>', methods=['POST'])
 def create_recipe(username):
@@ -274,6 +283,8 @@ def create_recipe(username):
     
     return redirect(url_for('view_recipe', recipe_id=new_recipe['_id'], username=username))
 
+
+
 @app.route('/add_allergin/<recipe_id>/<username>', methods=['POST'])
 def add_allergin(recipe_id, username):
     recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
@@ -281,6 +292,7 @@ def add_allergin(recipe_id, username):
             'allergins':request.form.get('allergin')
         }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
+
 
 
 @app.route('/add_ingredient/<recipe_id>/<username>', methods=['POST'])
@@ -299,6 +311,7 @@ def add_ingredient(recipe_id, username):
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
         
 
+
 @app.route('/add_instruction/<recipe_id>/<username>', methods=['POST'])
 def add_instruction(recipe_id, username):
     if request.form.get('instruction') == '':
@@ -315,6 +328,11 @@ def add_instruction(recipe_id, username):
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
 
+
+@app.route('/delete_recipe/<recipe_id>/<username>')
+def delete_recipe(recipe_id, username):
+    recipes.delete_one({'_id': ObjectId(recipe_id)})
+    return redirect(url_for('get_recipes'))
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
@@ -343,10 +361,13 @@ def login(recipe_id):
         return render_template("login.html", recipe_id=recipe_id)
         
         
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
+
 
 @app.route('/register', methods=['POST'])
 def register():
