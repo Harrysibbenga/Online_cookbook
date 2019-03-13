@@ -159,7 +159,9 @@ def view_recipe(recipe_id, username):
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe)
     elif username == "Admin" or username == the_recipe['user']:
-        return render_template('viewrecipeowner.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
+        return render_template('viewrecipeowner.html', recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
         
@@ -176,7 +178,9 @@ def save_recipe(recipe_id, username):
         message = "Recipe saved to favorites"
         the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
         if username == "Admin" or username == the_recipe['user']:
-            return render_template('viewrecipeowner.html', recipe=the_recipe, message=message )
+            return render_template('viewrecipeowner.html', recipe=the_recipe, message=message, authors=authors.find(), allergins=allergins.find(), 
+        types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
         else:
             return render_template('viewrecipe.html', recipe=the_recipe, message=message )
             
@@ -270,6 +274,16 @@ def create_recipe(username):
     })
     
     return redirect(url_for('view_recipe', recipe_id=new_recipe['_id'], username=username))
+
+@app.route('/add_allergin/<recipe_id>/<username>', methods=['POST'])
+def add_allergin(recipe_id, username):
+    recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+        {
+            'allergins':request.form.get('allergin')
+        }})
+    return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
+        
+        
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
