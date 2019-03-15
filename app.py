@@ -287,7 +287,7 @@ def create_recipe(username):
 
 @app.route('/add_allergin/<recipe_id>/<username>', methods=['POST'])
 def add_allergin(recipe_id, username):
-    if request.form.get('allergin') == '':
+    if request.form.get('allergin') == None:
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, allergin_message=message, 
@@ -343,12 +343,32 @@ def delete_recipe(recipe_id, username):
     
     
 
-@app.route('/edit_allergin/<recipe_id>/<username>/<allergin_id>/<recipe_allergin>', methods=['GET','POST'])
-def edit_allergin(recipe_id, username, allergin_id, recipe_allergin):
+@app.route('/edit_allergin/<recipe_id>/<username>/<allergin_id>/<recipe_allergen>', methods=['GET','POST'])
+def edit_allergin(recipe_id, username, allergin_id, recipe_allergen):
     allergin = allergins.find_one({'_id': ObjectId(allergin_id)})
-    recipes.update_one({'_id': ObjectId(recipe_id), 'allergins': recipe_allergin}, {'$set': { 'allergins.$': allergin['name']}})
+    recipes.update_one({'_id': ObjectId(recipe_id), 'allergins': recipe_allergen}, {'$set': { 'allergins.$': allergin['name']}})
     return redirect(url_for('view_recipe', username=username, recipe_id=recipe_id, allergin_id=allergin_id))
 
+
+
+@app.route('/delete_allergen/<recipe_id>/<username>/<recipe_allergen>')
+def delete_allergen(recipe_id, username, recipe_allergen):
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergins': recipe_allergen}})
+    return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
+
+
+
+@app.route('/delete_instruction/<recipe_id>/<username>/<recipe_instruction>')
+def delete_instruction(recipe_id, username, recipe_instruction):
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'instructions': recipe_instruction}})
+    return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
+    
+
+
+@app.route('/delete_ingredient/<recipe_id>/<username>/<recipe_ingredient>')
+def delete_ingredient(recipe_id, username, recipe_ingredient):
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'ingredients': recipe_ingredient}})
+    return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])

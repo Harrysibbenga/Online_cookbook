@@ -72,28 +72,28 @@
     <div class="row">
         <div class="col s12 m6">
             <div class="z-depth-3 allergins-section">
-                <h2 class="section-title">Allergins</h2>
+                <h2 class="section-title">Allergens</h2>
                 <div class="row">
                     <ol>
-                        {% for recipe_allergin in recipe.allergins %}
+                        {% for recipe_allergen in recipe.allergins %}
                         <li class="col s12">
-                            <p>{{recipe_allergin}}
+                            <p>{{recipe_allergen}}
                                 <a class="btn-floating pulse right modal-trigger" href="#edit_allergen"><i class="medium material-icons">edit</i></a>
-                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
+                                <a class="btn-floating pulse right" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
                         <!--Edit allergin Modal-->
                         <div id="edit_allergen" class="modal">
                             {% for allergin in allergins %}
-                            <form action="{{ url_for('edit_allergin', recipe_id=recipe._id, username=session.username, allergin_id=allergin._id, recipe_allergin=recipe_allergin) }}" method="POST">
+                            <form action="{{ url_for('edit_allergin', recipe_id=recipe._id, username=session.username, allergin_id=allergin._id, recipe_allergen=recipe_allergen) }}" method="POST">
                             {% endfor %} 
                                 <div class="modal-content">
                                     <h4>Edit Allergin</h4>
                                     <div class="row">
                                         <div class="col s12">
                                             <select name="allergin">
-                                                <option value='{{recipe_allergin}}' disabled selected>{{recipe_allergin}}</option>
+                                                <option value='{{recipe_allergen}}' disabled selected>{{recipe_allergen}}</option>
                                                 {% for allergin_ in allergins_modal %}
                                                 <option value='{{allergin_.name}}'>{{allergin_.name}}</option>
                                                 {% endfor %}
@@ -160,7 +160,7 @@
                         <li class="col s12">
                             <p>{{ingredient}}
                                 <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
-                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
+                                <a class="btn-floating pulse right" href="{{ url_for('delete_ingredient', recipe_id=recipe._id, username=session.username, recipe_ingredient=ingredient) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
@@ -168,7 +168,7 @@
                 </div>
                 <div class="row">
                     <div class="col s12">
-                        <form action="{{url_for('add_ingredient', recipe_id=recipe._id, username=session.username)}}" method="POST">
+                        <form action="{{url_for('add_ingredient', recipe_id=recipe._id, username=session.username) }}" method="POST">
                             <div class="row">
                                 <div class="input-field col s12">
                                     <div class="row">
@@ -218,7 +218,7 @@
                         <li class="col s12">
                             <p>{{instruction}}
                                 <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
-                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">delete</i></a>
+                                <a class="btn-floating pulse right" href="{{ url_for('delete_instruction', recipe_id=recipe._id, username=session.username, recipe_instruction=instruction) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
