@@ -31,7 +31,11 @@
                 {% else %}
                 <li><a class="btn-floating pulse" href="{{ url_for('add_recipe', username='no_user', recipe_id='add_recipe') }}"><i class="material-icons">add</i></a>Add Recipe</li>
                 {% endif %}
-                <li><a href="">Manage Categories</a></li>
+                {% if session.username%}
+                <li><a href="{{ url_for('manage_categories', recipe_id='no_id', username=session.username) }}">Manage Categories</a></li>
+                {% else %}
+                <li><a href="{{ url_for('manage_categories', recipe_id='manage_categories', username='no_user') }}">Manage Categories</a></li>
+                {% endif %}
                 <li><a href="">Dashboard</a></li>
                 {% if session.username %}
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
