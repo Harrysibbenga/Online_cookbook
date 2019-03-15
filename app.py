@@ -160,7 +160,7 @@ def view_recipe(recipe_id, username):
         return render_template('viewrecipe.html', recipe=the_recipe)
     elif username == "Admin" or username == the_recipe['user']:
         return render_template('viewrecipeowner.html', recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), 
-        allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
+        allergins=allergins.find(), allergins_selector=allergins.find(), allergins_modal=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
         categories=categories.find())
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
@@ -203,7 +203,7 @@ def saved_recipes(recipe_id, username):
 
 @app.route('/view_recipes/<recipe_id>/<username>')
 def view_recipes(recipe_id, username):
-    if username == "no_user" and recipe_id == "no_id":
+    if username == "no_user" and recipe_id == "view":
         return redirect(url_for('login', recipe_id=recipe_id))
     else:
         recipes_created = []
@@ -287,10 +287,17 @@ def create_recipe(username):
 
 @app.route('/add_allergin/<recipe_id>/<username>', methods=['POST'])
 def add_allergin(recipe_id, username):
-    recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
-        {
-            'allergins':request.form.get('allergin')
-        }})
+    if request.form.get('allergin') == '':
+        message = "Cannot be blank"
+        recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+        return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, allergin_message=message, 
+        recipe=recipe, authors=authors.find(), allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+    else:
+        recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+            {
+                'allergins':request.form.get('allergin')
+            }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
 
@@ -333,6 +340,16 @@ def add_instruction(recipe_id, username):
 def delete_recipe(recipe_id, username):
     recipes.delete_one({'_id': ObjectId(recipe_id)})
     return redirect(url_for('get_recipes'))
+    
+    
+
+@app.route('/edit_allergin/<recipe_id>/<username>/<allergin_id>/<recipe_allergin>', methods=['GET','POST'])
+def edit_allergin(recipe_id, username, allergin_id, recipe_allergin):
+    allergin = allergins.find_one({'_id': ObjectId(allergin_id)})
+    recipes.update_one({'_id': ObjectId(recipe_id), 'allergins': recipe_allergin}, {'$set': { 'allergins.$': allergin['name']}})
+    return redirect(url_for('view_recipe', username=username, recipe_id=recipe_id, allergin_id=allergin_id))
+
+
 
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
@@ -348,6 +365,8 @@ def login(recipe_id):
             session['username'] = username_input
             if recipe_id == 'no_id':
                 return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
+            if recipe_id == 'view':
+                return redirect(url_for('view_recipes', recipe_id=recipe_id, username=session['username']))
             elif recipe_id == 'home':
                 return redirect(url_for("get_recipes"))
             elif recipe_id == 'add_recipe':
