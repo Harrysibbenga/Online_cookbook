@@ -371,6 +371,106 @@ def delete_ingredient(recipe_id, username, recipe_ingredient):
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
 
+
+@app.route('/manage_categories/<recipe_id>/<username>')
+def manage_categories(recipe_id, username):
+    if username == "no_user" and recipe_id == "manage_categories":
+        return redirect(url_for('login', recipe_id=recipe_id))
+    else:
+        return render_template('managecategories.html', recipe_id=recipe_id, username=username, authors=authors.find(), 
+        allergins=allergins.find(), types=types.find(), countries=countries.find(), countries_=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find())
+
+
+
+@app.route('/add_category/<category_id>/<username>/<recipe_id>', methods=['GET', 'POST'])
+def add_category(recipe_id, category_id, username):
+    if category_id == "allergen":
+        if request.form.get('allergen') == None:
+            message = "Allergen name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+        else:
+            allergins.insert_one({'name': request.form.get('allergen')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    
+    elif category_id == "author":
+        if request.form.get('author_country') == None:
+            message = "Country name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, country_error=message))
+        elif request.form.get('author') == None:
+            message = "Author name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, name_error=message))
+        else:
+            authors.insert_one(
+                {
+                    'name': request.form.get('author'),
+                    'country': request.form.get('author_country')
+                })
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    
+    elif category_id == "country":
+        if request.form.get('country') == None:
+            message = "Allergen name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+        else:
+            allergins.insert_one({'name': request.form.get('country')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    
+    elif category_id == "cuisine":
+        if request.form.get('cuisine') == None:
+            message = "Allergen name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+        else:
+            allergins.insert_one({'name': request.form.get('cuisine')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            
+    elif category_id == "category":
+        if request.form.get('category') == None:
+            message = "Allergen name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+        else:
+            allergins.insert_one({'name': request.form.get('category')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        
+    elif category_id == "diet":
+        if request.form.get('diet') == None:
+            message = "Allergen name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+        else:
+            allergins.insert_one({'name': request.form.get('diet')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+
+
+
+@app.route('/delete_category/<category_id>/<username>/<recipe_id>')
+def delete_category(recipe_id, category_id, username):
+    allergin = allergins.find_one({'_id': ObjectId(category_id)})
+    author = authors.find_one({'_id': ObjectId(category_id)})
+    country = countries.find_one({'_id': ObjectId(category_id)})
+    cuisine = cuisines.find_one({'_id': ObjectId(category_id)})
+    category = categories.find_one({'_id': ObjectId(category_id)})
+    diet = diets.find_one({'_id': ObjectId(category_id)})
+    if allergin:
+        allergins.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif author:
+        authors.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif country:
+        countries.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif cuisine:
+        cuisines.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif category:
+        categories.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif diet:
+        diets.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+
+
+
 @app.route('/login/<recipe_id>', methods=['GET','POST'])
 def login(recipe_id):
     if request.method == "POST":
@@ -385,8 +485,10 @@ def login(recipe_id):
             session['username'] = username_input
             if recipe_id == 'no_id':
                 return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
-            if recipe_id == 'view':
+            elif recipe_id == 'view':
                 return redirect(url_for('view_recipes', recipe_id=recipe_id, username=session['username']))
+            elif recipe_id == 'manage_categories':
+                return redirect(url_for('manage_categories', recipe_id=recipe_id, username=session['username']))
             elif recipe_id == 'home':
                 return redirect(url_for("get_recipes"))
             elif recipe_id == 'add_recipe':
