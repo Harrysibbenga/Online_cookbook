@@ -396,10 +396,10 @@ def add_category(recipe_id, category_id, username):
     elif category_id == "author":
         if request.form.get('author_country') == None:
             message = "Country name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, country_error=message))
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, author_country_error=message))
         elif request.form.get('author') == None:
             message = "Author name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, name_error=message))
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, author_name_error=message))
         else:
             authors.insert_one(
                 {
@@ -410,36 +410,53 @@ def add_category(recipe_id, category_id, username):
     
     elif category_id == "country":
         if request.form.get('country') == None:
-            message = "Allergen name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+            message = "Country name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, country_error=message))
         else:
-            allergins.insert_one({'name': request.form.get('country')})
+            countries.insert_one({'name': request.form.get('country')})
             return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
     
     elif category_id == "cuisine":
         if request.form.get('cuisine') == None:
-            message = "Allergen name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+            message = "Cuisine name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, cuisine_error=message))
         else:
-            allergins.insert_one({'name': request.form.get('cuisine')})
+            cuisines.insert_one({'name': request.form.get('cuisine')})
             return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
             
     elif category_id == "category":
         if request.form.get('category') == None:
-            message = "Allergen name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+            message = "Category name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, category_error=message))
         else:
-            allergins.insert_one({'name': request.form.get('category')})
+            categories.insert_one({'name': request.form.get('category')})
             return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
         
     elif category_id == "diet":
         if request.form.get('diet') == None:
-            message = "Allergen name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+            message = "Diet name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, diet_error=message))
         else:
-            allergins.insert_one({'name': request.form.get('diet')})
+            diets.insert_one({'name': request.form.get('diet')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    
+    elif category_id == "origin":
+        if request.form.get('origin') == None:
+            message = "Origin name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, origin_error=message))
+        else:
+            origins.insert_one({'name': request.form.get('origin')})
             return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
 
+
+    
+    elif category_id == "type":
+        if request.form.get('type') == None:
+            message = "Type name can't be empty"
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, type_error=message))
+        else:
+            types.insert_one({'name': request.form.get('type')})
+            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
 
 
 @app.route('/delete_category/<category_id>/<username>/<recipe_id>')
@@ -450,6 +467,8 @@ def delete_category(recipe_id, category_id, username):
     cuisine = cuisines.find_one({'_id': ObjectId(category_id)})
     category = categories.find_one({'_id': ObjectId(category_id)})
     diet = diets.find_one({'_id': ObjectId(category_id)})
+    origin = origins.find_one({'_id': ObjectId(category_id)})
+    type_of_food = types.find_one({'_id': ObjectId(category_id)})
     if allergin:
         allergins.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
@@ -467,6 +486,12 @@ def delete_category(recipe_id, category_id, username):
         return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
     elif diet:
         diets.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif origin:
+        origins.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+    elif type_of_food:
+        types.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
 
 
