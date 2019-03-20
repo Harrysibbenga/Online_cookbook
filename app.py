@@ -1,7 +1,10 @@
 import os
 from flask import Flask, render_template, redirect, request, url_for, session
-from flask_pymongo import PyMongo
+from flask_pymongo import PyMongo, MongoClient
 from bson.objectid import ObjectId
+import json
+from bson import json_util
+from bson.json_util import dumps
 
 app = Flask(__name__)
 app.secret_key = "some_secret"
@@ -55,7 +58,7 @@ def get_recipes():
     
 
 
-@app.route('/search_recipes', methods=['POST'])
+@app.route('/search_recipes', methods=['GET','POST'])
 def search_recipes():
     user_input = request.form['recipe_name']
     recipes.create_index([('name', 'text')])
@@ -159,8 +162,11 @@ def view_recipe(recipe_id, username):
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe)
     elif username == "Admin" or username == the_recipe['user']:
-        return render_template('viewrecipeowner.html', recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), 
-        allergins=allergins.find(), allergins_selector=allergins.find(), allergins_modal=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
+        ids = list(range(0, len(the_recipe['allergins'])))
+        recipe_allergens_tuple = zip(ids, the_recipe['allergins'])
+        recipe_allergens_list = the_recipe['allergins']
+        return render_template('viewrecipeowner.html', recipe_allergens=recipe_allergens_list, recipe_allergens_list=recipe_allergens_list, recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), 
+        allergins=allergins.find(), allergins_selector=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
         categories=categories.find())
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
@@ -224,7 +230,7 @@ def edit_recipe(recipe_id, username):
 
 
 
-@app.route('/update_recipe/<recipe_id>/<username>', methods=['POST'])
+@app.route('/update_recipe/<recipe_id>/<username>', methods=['GET','POST'])
 def update_recipe(recipe_id, username):
     recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$set':
         {
@@ -255,7 +261,7 @@ def add_recipe(recipe_id, username):
 
 
 
-@app.route('/create_recipe/<username>', methods=['POST'])
+@app.route('/create_recipe/<username>', methods=['GET','POST'])
 def create_recipe(username):
     recipes.insert_one(
     {
@@ -285,7 +291,7 @@ def create_recipe(username):
 
 
 
-@app.route('/add_allergin/<recipe_id>/<username>', methods=['POST'])
+@app.route('/add_allergin/<recipe_id>/<username>', methods=['GET','POST'])
 def add_allergin(recipe_id, username):
     if request.form.get('allergin') == None:
         message = "Cannot be blank"
@@ -302,7 +308,7 @@ def add_allergin(recipe_id, username):
 
 
 
-@app.route('/add_ingredient/<recipe_id>/<username>', methods=['POST'])
+@app.route('/add_ingredient/<recipe_id>/<username>', methods=['GET','POST'])
 def add_ingredient(recipe_id, username):
     if request.form.get('ingredient') == '':
         message = "Cannot be blank"
@@ -343,11 +349,14 @@ def delete_recipe(recipe_id, username):
     
     
 
-@app.route('/edit_allergin/<recipe_id>/<username>/<allergin_id>/<recipe_allergen>', methods=['GET','POST'])
-def edit_allergin(recipe_id, username, allergin_id, recipe_allergen):
-    allergin = allergins.find_one({'_id': ObjectId(allergin_id)})
-    recipes.update_one({'_id': ObjectId(recipe_id), 'allergins': recipe_allergen}, {'$set': { 'allergins.$': allergin['name']}})
-    return redirect(url_for('view_recipe', username=username, recipe_id=recipe_id, allergin_id=allergin_id))
+@app.route('/edit_allergen/<recipe_id>/<username>/<allergen_name>', methods=['GET','POST'])
+def edit_allergen(recipe_id, username, allergen_name):
+    recipes.update_one(
+        {
+            '_id': ObjectId(recipe_id), 'allergins': allergen_name}, 
+            {'$set': { 'allergins.$': request.form.get('allergin')}
+        })
+    return redirect(url_for('view_recipe', username=username, recipe_id=recipe_id))
 
 
 
@@ -535,7 +544,7 @@ def logout():
 
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == "POST":
         username_input = request.form.get('username')
@@ -554,6 +563,22 @@ def register():
             return render_template('register.html', message=message)
     else:
         return render_template("register.html")
+    
+
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+
+@app.route("/onlinecookbook/recipes")
+def onlinecookbook_recipes():
+    recipes = recipes.find()
+    json_recipes = []
+    for recipe in recipes:
+        json_recipes.append(recipe)
+    json_recipes = json.dumps(json_recipes, default=json_util.default)
+    return json_recipes
     
 
 
