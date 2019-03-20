@@ -566,22 +566,6 @@ def register():
     
 
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
-
-@app.route("/onlinecookbook/recipes")
-def onlinecookbook_recipes():
-    recipes = recipes.find()
-    json_recipes = []
-    for recipe in recipes:
-        json_recipes.append(recipe)
-    json_recipes = json.dumps(json_recipes, default=json_util.default)
-    return json_recipes
-    
-
-
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
         port=int(os.environ.get('PORT')),
