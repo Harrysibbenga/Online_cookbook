@@ -1,6 +1,6 @@
 import os
-from flask import Flask, render_template, redirect, request, url_for, session
-from flask_pymongo import PyMongo, MongoClient
+from flask import Flask, render_template, redirect, request, url_for, session, jsonify
+from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 import json
 from bson import json_util
@@ -30,7 +30,7 @@ users = mongo.db.users
 
 def find_user(user_input, coll):
     """
-    Used to look through a collection to verify that the username is in there and to return the user
+        Used to look through a collection to verify that the username is in there and to return the user
     """
     for user in coll:
         if user['username'] == user_input:
@@ -43,46 +43,44 @@ def find_user(user_input, coll):
 @app.route('/')
 def index():
     return render_template('index.html')
-    
-
 
 @app.route('/get_recipes')
 def get_recipes():
-    '''
-        gets the collections from MongoDB Atlas and renders them on the recipes.html page
-    '''
+    """
+        Gets the collections from MongoDB Atlas and renders them on the recipes.html page
+    """
     return render_template('recipes.html', recipes=recipes.find(), 
     authors=authors.find(), allergins=allergins.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
-    
-
 
 @app.route('/search_recipes', methods=['GET','POST'])
 def search_recipes():
+    """
+        Creates an index of each recipe name and uses that index to search for recipes with similar names
+    """
     user_input = request.form['recipe_name']
     recipes.create_index([('name', 'text')])
     return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}),
     authors=authors.find(), allergins=allergins.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
-    
-
 
 @app.route('/search_ingredients', methods=['POST'])
 def search_ingredients():
+    """
+        Uses queries to search the database for matching ingredient names and displays those recipes found.
+    """
     ingredient_input = request.form['ingredient_name']
     return render_template('recipes.html', recipes=recipes.find({'ingredients': ingredient_input.capitalize()}), 
     authors=authors.find(), allergins=allergins.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
-    
-
 
 @app.route('/filter_search', methods=['POST'])
 def filter_search():
     """
-    
+        Filters the search depending on what inputs have values and displays all the matching recipes. 
     """
 ## ----- Inputs ------    
     allergin_input = request.form.get('allergin_name')
@@ -158,25 +156,29 @@ def filter_search():
 
 @app.route('/view_recipe/<recipe_id>/<username>')
 def view_recipe(recipe_id, username):
+    """
+        View of the recipe clicked from the menu page, if no user is present they can view the recipe however if 
+        a user is logged on depending on whether they are the owner/Admin they have a different view of the recipe.
+    """
     the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe)
     elif username == "Admin" or username == the_recipe['user']:
-        ids = list(range(0, len(the_recipe['allergins'])))
-        recipe_allergens_tuple = zip(ids, the_recipe['allergins'])
         recipe_allergens_list = the_recipe['allergins']
-        return render_template('viewrecipeowner.html', recipe_allergens=recipe_allergens_list, recipe_allergens_list=recipe_allergens_list, recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), 
-        allergins=allergins.find(), allergins_selector=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
-        categories=categories.find())
+        return render_template('viewrecipeowner.html', recipe_allergens=recipe_allergens_list,
+        recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), allergins=allergins.find(), types=types.find(), 
+        cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
-        
-
 
 @app.route('/save_recipe/<recipe_id>/<username>/')
 def save_recipe(recipe_id, username):
+    """
+        When a user clicks the favorite/save button the user saves it to thier saved recipes page and gives the recipe an upvote
+        however if the user isnt logged on then the user is redirected to login. 
+    """
     if username == "no_user":
-        return redirect(url_for('login', recipe_id=recipe_id))
+        return redirect(url_for('login', page_id='no_id'))
     else:
         recipes.update({'_id': ObjectId(recipe_id) }, {'$inc': {'votes': 1 }})
         user = users.find_one({'username': username})
@@ -189,13 +191,14 @@ def save_recipe(recipe_id, username):
             categories=categories.find())
         else:
             return render_template('viewrecipe.html', recipe=the_recipe, message=message )
-            
 
-
-@app.route('/saved_recipes/<recipe_id>/<username>')
-def saved_recipes(recipe_id, username):
-    if username == "no_user" and recipe_id == "no_id":
-        return redirect(url_for('login', recipe_id=recipe_id))
+@app.route('/saved_recipes/<page_id>/<username>')
+def saved_recipes(page_id, username):
+    """
+        User redirected to the login page if they aren't logged in however if they are then they can view thier saved recipes
+    """
+    if username == "no_user" and page_id == "saved_recipes":
+        return redirect(url_for('login', page_id=page_id))
     else:
         user = users.find_one({'username': username})
         all_recipes = recipes.find()
@@ -204,13 +207,14 @@ def saved_recipes(recipe_id, username):
             if recipe['_id'] in user['saved_recipes']:
                 recipes_saved.append(recipe)
         return render_template("savedrecipes.html", recipes=recipes_saved)
-        
 
-
-@app.route('/view_recipes/<recipe_id>/<username>')
-def view_recipes(recipe_id, username):
-    if username == "no_user" and recipe_id == "view":
-        return redirect(url_for('login', recipe_id=recipe_id))
+@app.route('/view_recipes/<page_id>/<username>')
+def view_recipes(page_id, username):
+    """
+        User redirected to the login page if they aren't logged in however if they are then they can view thier created recipes
+    """
+    if username == "no_user" and page_id == "view":
+        return redirect(url_for('login', page_id=page_id))
     else:
         recipes_created = []
         all_recipes = recipes.find()
@@ -219,19 +223,21 @@ def view_recipes(recipe_id, username):
                 recipes_created.append(recipe)
         return render_template("viewrecipes.html", recipes=recipes_created)
 
-
-
 @app.route('/edit_recipe/<recipe_id>/<username>')
 def edit_recipe(recipe_id, username):
+    """
+        View used to redirect the user to the edit recipe page for the purpose of updating the recipe later.
+    """
     the_recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
     return render_template("editrecipe.html", recipe_id=recipe_id, recipe=the_recipe, username=username, authors=authors.find(), 
     types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
     origins=origins.find(), categories=categories.find())
 
-
-
 @app.route('/update_recipe/<recipe_id>/<username>', methods=['GET','POST'])
 def update_recipe(recipe_id, username):
+    """
+        Updates the recipe on the database and redirects to the recipe page. 
+    """
     recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$set':
         {
             'name':request.form.get('name'),
@@ -248,21 +254,23 @@ def update_recipe(recipe_id, username):
             'image_url':request.form.get('image_url')
         }})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
-    
 
-
-@app.route('/add_recipe/<recipe_id>/<username>')
-def add_recipe(recipe_id, username):
-    if username == "no_user" and recipe_id == "add_recipe":
-        return redirect(url_for('login', recipe_id=recipe_id))
+@app.route('/add_recipe/<page_id>/<username>')
+def add_recipe(page_id, username):
+    """
+        If User isnt logged in they are redirected to the login page, otherwise the user will be redirected to the add recipe page.
+    """
+    if username == "no_user" and page_id == "add_recipe":
+        return redirect(url_for('login', page_id=page_id))
     else:
         return render_template('addrecipe.html', username=username, authors=authors.find(), types=types.find(), 
         cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
 
-
-
 @app.route('/create_recipe/<username>', methods=['GET','POST'])
 def create_recipe(username):
+    """
+        Creates a recipe with basic information in the database and redirects to the recipe page using the new id created. 
+    """
     recipes.insert_one(
     {
         'name':request.form.get('name'),
@@ -289,16 +297,18 @@ def create_recipe(username):
     
     return redirect(url_for('view_recipe', recipe_id=new_recipe['_id'], username=username))
 
-
-
-@app.route('/add_allergin/<recipe_id>/<username>', methods=['GET','POST'])
-def add_allergin(recipe_id, username):
-    if request.form.get('allergin') == None:
+@app.route('/add_allergen/<recipe_id>/<username>', methods=['GET','POST'])
+def add_allergen(recipe_id, username):
+    """
+        Adds an allergen to the recipe and checks if an input is present if not then it returns an error message. 
+    """
+    if request.form.get('allergen') == None or request.form.get('allergen') == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
+        recipe_allergens_list = recipe['allergins']
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, allergin_message=message, 
-        recipe=recipe, authors=authors.find(), allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        recipe=recipe, authors=authors.find(), recipe_allergens=recipe_allergens_list, allergens=allergins.find(), 
+        types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
         recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
             {
@@ -306,11 +316,12 @@ def add_allergin(recipe_id, username):
             }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
-
-
 @app.route('/add_ingredient/<recipe_id>/<username>', methods=['GET','POST'])
 def add_ingredient(recipe_id, username):
-    if request.form.get('ingredient') == '':
+    """
+        Adds an ingredient to the recipe and checks if an input is present if not then it returns an error message. 
+    """
+    if request.form.get('ingredient') == None or request.form.get('ingredient') == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, ingredient_message=message, 
@@ -322,12 +333,13 @@ def add_ingredient(recipe_id, username):
                 'ingredients':request.form.get('ingredient').capitalize()
             }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
-        
-
 
 @app.route('/add_instruction/<recipe_id>/<username>', methods=['POST'])
 def add_instruction(recipe_id, username):
-    if request.form.get('instruction') == '':
+    """
+        Adds an instruction to the recipe and checks if an input is present if not then it returns an error message. 
+    """
+    if request.form.get('instruction') == None or request.form.get('instruction') == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, instruction_message=message, 
@@ -340,136 +352,156 @@ def add_instruction(recipe_id, username):
             }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
-
-
 @app.route('/delete_recipe/<recipe_id>/<username>')
 def delete_recipe(recipe_id, username):
+    """
+        Deletes the entire recipe from the database.
+    """
     recipes.delete_one({'_id': ObjectId(recipe_id)})
     return redirect(url_for('get_recipes'))
-    
-    
-
-@app.route('/edit_allergen/<recipe_id>/<username>/<allergen_name>', methods=['GET','POST'])
-def edit_allergen(recipe_id, username, allergen_name):
-    recipes.update_one(
-        {
-            '_id': ObjectId(recipe_id), 'allergins': allergen_name}, 
-            {'$set': { 'allergins.$': request.form.get('allergin')}
-        })
-    return redirect(url_for('view_recipe', username=username, recipe_id=recipe_id))
-
-
 
 @app.route('/delete_allergen/<recipe_id>/<username>/<recipe_allergen>')
 def delete_allergen(recipe_id, username, recipe_allergen):
+    """
+        Delete any allergen using its value and update the database. 
+    """
     recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergins': recipe_allergen}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
-
-
 @app.route('/delete_instruction/<recipe_id>/<username>/<recipe_instruction>')
 def delete_instruction(recipe_id, username, recipe_instruction):
+    """
+        Delete any instruction using its value and update the databse. 
+    """
     recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'instructions': recipe_instruction}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
-    
-
 
 @app.route('/delete_ingredient/<recipe_id>/<username>/<recipe_ingredient>')
 def delete_ingredient(recipe_id, username, recipe_ingredient):
+    """
+        Delete any ingredient using its value and update the database. 
+    """
     recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'ingredients': recipe_ingredient}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
-
-
-@app.route('/manage_categories/<recipe_id>/<username>')
-def manage_categories(recipe_id, username):
-    if username == "no_user" and recipe_id == "manage_categories":
-        return redirect(url_for('login', recipe_id=recipe_id))
+@app.route('/manage_categories/<page_id>/<username>')
+def manage_categories(page_id, username):
+    """
+        View the manage categories page and if user isnt logged in then they're redirected tthe login page. 
+    """
+    if username == "no_user" and page_id == "manage_categories":
+        return redirect(url_for('login', page_id=page_id))
     else:
-        return render_template('managecategories.html', recipe_id=recipe_id, username=username, authors=authors.find(), 
+        return render_template('managecategories.html', page_id=page_id, username=username, authors=authors.find(), 
         allergins=allergins.find(), types=types.find(), countries=countries.find(), countries_=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
+        
+@app.route('/edit_category/<username>/<category_id>', methods=['GET','POST'])
+def edit_category(username, category_id):
+    """
+        Edit any category using category_id and update the database. 
+    """
+    
+    allergen = allergins.find_one({'_id': ObjectId(category_id)})
+    author = authors.find_one({'_id': ObjectId(category_id)})
+    country = countries.find_one({'_id': ObjectId(category_id)})
+    cuisine = cuisines.find_one({'_id': ObjectId(category_id)})
+    category = categories.find_one({'_id': ObjectId(category_id)})
+    diet = diets.find_one({'_id': ObjectId(category_id)})
+    origin = origins.find_one({'_id': ObjectId(category_id)})
+    type_of_food = types.find_one({'_id': ObjectId(category_id)})
+    
+    if allergen:
+        allergins.update_one(
+            {
+                '_id': ObjectId(category_id)}, 
+                {'$set': { 'name': request.form.get('allergen')}
+            })
+        return redirect(url_for('manage_categories', username=username, category_id=category_id, page_id="manage_categories"))
 
-
-
-@app.route('/add_category/<category_id>/<username>/<recipe_id>', methods=['GET', 'POST'])
-def add_category(recipe_id, category_id, username):
-    if category_id == "allergen":
-        if request.form.get('allergen') == None:
+@app.route('/add_category/<category>/<username>/<page_id>', methods=['GET', 'POST'])
+def add_category(page_id, category, username):
+    """
+        Add any category using the value of the category and update the database. 
+        If no value is entered then user is prompted with a message.
+    """
+    if category == "allergen":
+        if request.form.get('allergen') == None or request.form.get('allergen') == '':
             message = "Allergen name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, allergen_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, allergen_error=message))
         else:
             allergins.insert_one({'name': request.form.get('allergen')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
-    elif category_id == "author":
-        if request.form.get('author_country') == None:
+    elif category == "author":
+        if request.form.get('author_country') == None or request.form.get('author_country') == '':
             message = "Country name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, author_country_error=message))
-        elif request.form.get('author') == None:
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, author_country_error=message))
+        elif request.form.get('author') == None or request.form.get('author') =='':
             message = "Author name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, author_name_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, author_name_error=message))
         else:
             authors.insert_one(
                 {
                     'name': request.form.get('author'),
                     'country': request.form.get('author_country')
                 })
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
-    elif category_id == "country":
-        if request.form.get('country') == None:
+    elif category == "country":
+        if request.form.get('country') == None or request.form.get('country') == '':
             message = "Country name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, country_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, country_error=message))
         else:
             countries.insert_one({'name': request.form.get('country')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
-    elif category_id == "cuisine":
-        if request.form.get('cuisine') == None:
+    elif category == "cuisine":
+        if request.form.get('cuisine') == None or request.form.get('cuisine') == '':
             message = "Cuisine name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, cuisine_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, cuisine_error=message))
         else:
             cuisines.insert_one({'name': request.form.get('cuisine')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
             
-    elif category_id == "category":
-        if request.form.get('category') == None:
+    elif category == "category":
+        if request.form.get('category') == None or request.form.get('category') == '':
             message = "Category name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, category_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, category_error=message))
         else:
             categories.insert_one({'name': request.form.get('category')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
         
-    elif category_id == "diet":
-        if request.form.get('diet') == None:
+    elif category == "diet":
+        if request.form.get('diet') == None or request.form.get('diet') == '':
             message = "Diet name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, diet_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, diet_error=message))
         else:
             diets.insert_one({'name': request.form.get('diet')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
-    elif category_id == "origin":
-        if request.form.get('origin') == None:
+    elif category == "origin":
+        if request.form.get('origin') == None or request.form.get('origin') == '':
             message = "Origin name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, origin_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, origin_error=message))
         else:
             origins.insert_one({'name': request.form.get('origin')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
-
-
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
-    elif category_id == "type":
-        if request.form.get('type') == None:
+    elif category == "type":
+        if request.form.get('type') == None or request.form.get('type') == '':
             message = "Type name can't be empty"
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id, type_error=message))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, type_error=message))
         else:
             types.insert_one({'name': request.form.get('type')})
-            return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
 
-
-@app.route('/delete_category/<category_id>/<username>/<recipe_id>')
-def delete_category(recipe_id, category_id, username):
+@app.route('/delete_category/<category_id>/<username>/<page_id>')
+def delete_category(page_id, category_id, username):
+    """
+        Delete any category using category_id and update the database. 
+    """
+    
     allergin = allergins.find_one({'_id': ObjectId(category_id)})
     author = authors.find_one({'_id': ObjectId(category_id)})
     country = countries.find_one({'_id': ObjectId(category_id)})
@@ -478,35 +510,39 @@ def delete_category(recipe_id, category_id, username):
     diet = diets.find_one({'_id': ObjectId(category_id)})
     origin = origins.find_one({'_id': ObjectId(category_id)})
     type_of_food = types.find_one({'_id': ObjectId(category_id)})
+    
     if allergin:
         allergins.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif author:
         authors.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif country:
         countries.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif cuisine:
         cuisines.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif category:
         categories.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif diet:
         diets.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif origin:
         origins.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif type_of_food:
         types.delete_one({'_id': ObjectId(category_id)})
-        return redirect(url_for('manage_categories', username=username, recipe_id=recipe_id))
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
 
-
-
-@app.route('/login/<recipe_id>', methods=['GET','POST'])
-def login(recipe_id):
+@app.route('/login/<page_id>', methods=['GET','POST'])
+def login(page_id):
+    """
+        Checks username and password input to make sure they match values on the databsae if not promts user with 
+        messages if user dosen't exist/password is wrong. 
+        Redirects to pages based on page_id value. 
+    """
     if request.method == "POST":
         username_input = request.form.get('username')
         password_input = request.form.get('password')
@@ -514,38 +550,40 @@ def login(recipe_id):
         user = find_user(username_input, all_users)
         if user == None:
             message = "User dosen't exist"
-            return render_template("login.html", recipe_id=recipe_id, message=message)
+            return render_template("login.html", page_id=page_id, message=message)
         elif user['password'] == password_input:
             session['username'] = username_input
-            if recipe_id == 'no_id':
-                return redirect(url_for('saved_recipes', recipe_id=recipe_id, username=session['username']))
-            elif recipe_id == 'view':
-                return redirect(url_for('view_recipes', recipe_id=recipe_id, username=session['username']))
-            elif recipe_id == 'manage_categories':
-                return redirect(url_for('manage_categories', recipe_id=recipe_id, username=session['username']))
-            elif recipe_id == 'home':
+            if page_id == 'saved_recipes':
+                return redirect(url_for('saved_recipes', page_id=page_id, username=session['username']))
+            elif page_id == 'view':
+                return redirect(url_for('view_recipes', page_id=page_id, username=session['username']))
+            elif page_id == 'manage_categories':
+                return redirect(url_for('manage_categories', page_id=page_id, username=session['username']))
+            elif page_id == 'home':
                 return redirect(url_for("get_recipes"))
-            elif recipe_id == 'add_recipe':
-                return redirect(url_for('add_recipe', recipe_id=recipe_id, username=session['username']))
+            elif page_id == 'add_recipe':
+                return redirect(url_for('add_recipe', page_id=page_id, username=session['username']))
             else:
-                return redirect(url_for("save_recipe", recipe_id=recipe_id, username=session['username']))
+                return redirect(url_for("save_recipe", page_id=page_id, username=session['username']))
         else:
             message = "Incorrect password"
-            return render_template("login.html", recipe_id=recipe_id, message=message)
+            return render_template("login.html", page_id=page_id, message=message)
     else:
-        return render_template("login.html", recipe_id=recipe_id)
-        
-        
+        return render_template("login.html", page_id=page_id)
 
 @app.route('/logout')
 def logout():
+    """
+        Removes session user once they logout
+    """
     session.pop('username', None)
     return redirect(url_for('index'))
 
-
-
 @app.route('/register', methods=['GET','POST'])
 def register():
+    """
+        Registers user and checks if user exists or if passwords mismatch, prompts user when account has been created. 
+    """
     if request.method == "POST":
         username_input = request.form.get('username')
         password_input = request.form.get('password')
@@ -564,6 +602,12 @@ def register():
     else:
         return render_template("register.html")
     
+@app.route('/dashboard')
+def dashboard():
+    """
+        Renders the dashboard page.
+    """
+    return render_template('dashboard.html')
 
 
 if __name__ == '__main__':
