@@ -609,6 +609,17 @@ def dashboard():
     """
     return render_template('dashboard.html')
 
+@app.route("/onlinecookbook/recipes")
+def onlinecookbook_recipes():
+    """
+        Used to get the values of all the recipes for later use to display them using d3.js/dc.js
+    """
+    all_recipes = recipes.find()
+    json_recipes = []
+    for recipe in all_recipes:
+        json_recipes.append(recipe)
+    json_recipes = json.dumps(json_recipes, default=json_util.default)
+    return json_recipes
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
