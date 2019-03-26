@@ -11,8 +11,12 @@
 
 /* Home page*/
 
-#home-page {
-    height: 500px;
+.max-height {
+    height: 100vh;
+}
+
+.mr {
+    margin-right: 1rem;
 }
 
 .bg-img {
