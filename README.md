@@ -1,5 +1,11 @@
 # Online Cookbook
 
+## UX
+
+## Features
+
+## Technology Used
+
 ## Testing
 
 Did a manual test to see if the database results displayed on the recipes page.
@@ -31,7 +37,12 @@ if a user isnt logged on then they will be redirected to the login page to log o
 * Manual testing was done to make sure that when the favorite button is clicked the recipe votes increments by one
 also if the recipe is already saved then it doesnt get added on to the saved recipes page again.
 
+## Deployment
+
+* [Online Cookbook](https://online-cookbook-hs.herokuapp.com/)
+
+
 ## Credits
 
-*[Title page background image](https://www.shutterstock.com/image-photo/kitchen-cooking-utensils-ceramic-storage-pot-327210395?src=w9EwWJ6WlsWUoHoxjA7O-g-1-1)
-*[Eggs and Toast](https://image.shutterstock.com/image-photo/sandwich-avocado-fried-egg-on-450w-346094294.jpg)
+* [Title page background image](https://www.shutterstock.com/image-photo/kitchen-cooking-utensils-ceramic-storage-pot-327210395?src=w9EwWJ6WlsWUoHoxjA7O-g-1-1)
+* [Eggs and Toast](https://image.shutterstock.com/image-photo/sandwich-avocado-fried-egg-on-450w-346094294.jpg)
