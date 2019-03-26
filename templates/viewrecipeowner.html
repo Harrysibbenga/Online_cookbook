@@ -71,61 +71,34 @@
 <section>
     <div class="row">
         <div class="col s12 m6">
-            <div class="z-depth-3 allergins-section">
+            <div class="z-depth-3 allergens-section">
                 <h2 class="section-title">Allergens</h2>
                 <div class="row">
                     <ol>
-                        {% for recipe_allergen in recipe.allergins %}
+                        {% for recipe_allergen in recipe_allergens %}
                         <li class="col s12">
-                            <p>{{recipe_allergen}}
-                                <a class="btn-floating pulse right modal-trigger" href="#edit_allergen"><i class="medium material-icons">edit</i></a>
-                                <a class="btn-floating pulse right" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
+                            <p class="recipe_allergen_name">{{recipe_allergen}}
+                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
-                        <!--Edit allergin Modal-->
-                        <div id="edit_allergen" class="modal">
-                            {% for allergin in allergins %}
-                            <form action="{{ url_for('edit_allergin', recipe_id=recipe._id, username=session.username, allergin_id=allergin._id, recipe_allergen=recipe_allergen) }}" method="POST">
-                            {% endfor %} 
-                                <div class="modal-content">
-                                    <h4>Edit Allergin</h4>
-                                    <div class="row">
-                                        <div class="col s12">
-                                            <select name="allergin">
-                                                <option value='{{recipe_allergen}}' disabled selected>{{recipe_allergen}}</option>
-                                                {% for allergin_ in allergins_modal %}
-                                                <option value='{{allergin_.name}}'>{{allergin_.name}}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Confirm Edit</button>
-                                    <a href="#" class="btn modal-close waves-effect waves-green btn-flat">No</a>
-                                </div>
-                            </form>
-                        </div>
                     </ol>
                 </div>
                 <div class="row">
                     <div class="col s12">
-                        <form action="{{url_for('add_allergin', recipe_id=recipe._id, username=session.username)}}" method="POST">
+                        <form action="{{url_for('add_allergen', recipe_id=recipe._id, username=session.username)}}" method="POST">
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <div class="row">
-                                        <div class="col s11">
-                                            <select name="allergin">
-                                                <option disabled selected>Choose your option</option>
-                                                {% for allergin in allergins_selector %}
-                                                <option value='{{allergin.name}}'>{{allergin.name}}</option>
-                                                {% endfor %} 
-                                            </select>
-                                        </div>
-                                        <div class="col s1">
-                                            <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
-                                        </div>
+                                    <div class="col s11">
+                                        <select name="allergen">
+                                            <option disabled selected>Choose your option</option>
+                                            {% for allergen in allergens %}
+                                                <option value='{{allergen.name}}'>{{allergen.name}}</option>
+                                            {% endfor %} 
+                                        </select>
+                                    </div>
+                                    <div class="col s1">
+                                        <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
                                     </div>
                                 </div>
                             </div>

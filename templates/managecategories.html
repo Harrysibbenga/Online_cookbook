@@ -10,18 +10,31 @@
             <h2 class="section-title">Allergens</h2>
             <div class="row">
                 <ol>
-                    {% for allergen in allergins %}
+                {% for allergen in allergins %}
                     <li class="col s12">
                         <p>{{allergen.name}}
-                            <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=allergen._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right modal-trigger" href="#modal1"><i class="medium material-icons">edit</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=allergen._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
-                    {% endfor %}
+                 <!--Modal Structure -->
+                <div id="modal1" class="modal">
+                    <form method="POST" action="{{ url_for('edit_category', category_id=allergen._id, username=session.username,)}}">
+                        <div class="modal-content">
+                            <h4>Modal Header</h4>
+                            <label for="allergen">Edit Allergen:</label>
+                            <input id="allergen" name="allergen" type="text" value="{{allergen.name}}" class="validate">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='allergen', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='allergen', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -44,14 +57,28 @@
                     <li class="col s12">
                         <p>{{author.name}},{{author.country}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=author._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=author._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
+                    <div id="modal1" class="modal">
+                        <form method="POST" action="{{ url_for('edit_category', category_id=author._id, username=session.username,)}}">
+                            <div class="modal-content">
+                                <h4>Author Edit</h4>
+                                <label for="author_name">Name:</label>
+                                <input id="author_name" name="author_name" type="text" value="{{author.name}}" class="validate">
+                                <label for="author_country">Country:</label>
+                                <input id="author_country" name="author_country" type="text" value="{{author.country}}" class="validate">
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
+                            </div>
+                        </form>
+                    </div>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='author', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='author', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -80,14 +107,14 @@
                     <li class="col s12">
                         <p>{{category.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=category._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=category._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='category', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='category', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -112,14 +139,14 @@
                     <li class="col s12">
                         <p>{{cuisine.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=cuisine._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=cuisine._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='cuisin', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='cuisine', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -142,14 +169,14 @@
                     <li class="col s12">
                         <p>{{country.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=country._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=country._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='country', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='country', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -172,14 +199,14 @@
                     <li class="col s12">
                         <p>{{diet.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=diet._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=diet._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='diet', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='diet', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -204,14 +231,14 @@
                     <li class="col s12">
                         <p>{{origin.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=origin._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=origin._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='origin', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='origin', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -234,14 +261,14 @@
                     <li class="col s12">
                         <p>{{type.name}}
                             <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=type._id, username=session.username, recipe_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=type._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
                         </p>
                     </li>
                     {% endfor %}
                 </ol>
             </div>
             <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category_id='type', recipe_id='manage_categories' )}}" method="POST">
+                <form action="{{url_for('add_category', username=session.username, category='type', page_id='manage_categories' )}}" method="POST">
                     <div class="input-field col s12">
                         <div class="row">
                             <div class="col s11">
@@ -256,6 +283,6 @@
                 </form>
             </div>
         </div>
-    </div>    
+    </div>
 </section>
 {% endblock %}

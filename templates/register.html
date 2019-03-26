@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-<section id="register-page">
+<section id="register-page" class="max-height">
     <div class="row">
         <div class="col s12 m7">
             <h1>Register</h1>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="row">
                         <div class="col s12">
-                            <p>Already Registered <a href="{{ url_for('login', recipe_id='no_id') }}">Login Here</a></p>
+                            <p>Already Registered <a href="{{ url_for('login', page_id='no_id') }}">Login Here</a></p>
                         </div>
                     </div>
                     <div class="row">
