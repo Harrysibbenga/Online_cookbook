@@ -54,13 +54,11 @@
             <li><a href="{{ url_for('view_recipes', username=session.username, page_id='view') }}"><i class="material-icons">book</i>View Recipes</a></li>
             {% else %}
             <li><a href="{{ url_for('view_recipes', username='no_user', page_id='view') }}"><i class="material-icons">book</i>View Recipes</a></li>
-            {% endif %}
-            {% if session.username %}
+            {% endif %} {% if session.username %}
             <li><a href="{{ url_for('add_recipe', username=session.username, page_id='add_recipe') }}"><i class="material-icons">add_circle</i>Add Recipe</a></li>
             {% else %}
             <li><a href="{{ url_for('add_recipe', username='no_user', page_id='add_recipe') }}"><i class="material-icons">add_circle</i>Add Recipe</a></li>
-            {% endif %}
-            {% if session.username %}
+            {% endif %} {% if session.username %}
             <li><a href="{{ url_for('manage_categories', page_id='manage_categories', username=session.username) }}"><i class="material-icons">settings_application</i>Manage Categories</a></li>
             {% else %}
             <li><a href="{{ url_for('manage_categories', page_id='manage_categories', username='no_user') }}"><i class="material-icons">settings_application</i>Manage Categories</a></li>
@@ -103,7 +101,7 @@
             $('select').formSelect();
         });
         $(document).ready(function() {
-            $('.modal').modal();  
+            $('.modal').modal();
         });
         $('#year').text(new Date().getFullYear());
     </script>
