@@ -1,4 +1,3 @@
-console.log('Loaded')
 queue()
     .defer(d3.json, "/onlinecookbook/recipes")
     .await(makeGraphs);
@@ -17,9 +16,8 @@ function show_category_chart(ndx) {
     var group = dim.group();
 
     dc.barChart("#category-chart")
-        .width(400)
+        .width(300)
         .height(300)
-        .margins({ top: 10, right: 50, bottom: 30, left: 50 })
         .dimension(dim)
         .group(group)
         .transitionDuration(1500)
@@ -75,7 +73,7 @@ function show_diet_distribution(ndx) {
 
 
     dc.barChart("#diet-distribution")
-        .width(400)
+        .width(300)
         .height(300)
         .dimension(dim)
         .group(type_by_meat, "Meat")
@@ -94,8 +92,7 @@ function show_diet_distribution(ndx) {
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
         .xAxisLabel("Types of Food")
-        .legend(dc.legend().x(320).y(20).itemHeight(15).gap(5))
-        .margins({ top: 10, right: 100, bottom: 30, left: 30 });
+        .legend(dc.legend().x(350).y(20).itemHeight(15).gap(5))
 }
 
 function show_cuisine_chart(ndx) {
@@ -103,9 +100,8 @@ function show_cuisine_chart(ndx) {
     var group = dim.group();
 
     dc.barChart("#users-chart")
-        .width(400)
+        .width(300)
         .height(300)
-        .margins({ top: 10, right: 50, bottom: 30, left: 50 })
         .dimension(dim)
         .group(group)
         .transitionDuration(1500)
