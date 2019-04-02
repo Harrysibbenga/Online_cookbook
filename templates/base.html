@@ -55,9 +55,17 @@
             {% else %}
             <li><a href="{{ url_for('view_recipes', username='no_user', page_id='view') }}"><i class="material-icons">book</i>View Recipes</a></li>
             {% endif %}
-            <li><a href=""><i class="material-icons">add_circle</i>Add Recipe</a></li>
-            <li><a href=""><i class="material-icons">settings_application</i>Manage Categories</a></li>
-            <li><a href=""><i class="material-icons">dashboard</i>Dashboard</a></li>
+            {% if session.username %}
+            <li><a href="{{ url_for('add_recipe', username=session.username, page_id='add_recipe') }}"><i class="material-icons">add_circle</i>Add Recipe</a></li>
+            {% else %}
+            <li><a href="{{ url_for('add_recipe', username='no_user', page_id='add_recipe') }}"><i class="material-icons">add_circle</i>Add Recipe</a></li>
+            {% endif %}
+            {% if session.username %}
+            <li><a href="{{ url_for('manage_categories', page_id='manage_categories', username=session.username) }}"><i class="material-icons">settings_application</i>Manage Categories</a></li>
+            {% else %}
+            <li><a href="{{ url_for('manage_categories', page_id='manage_categories', username='no_user') }}"><i class="material-icons">settings_application</i>Manage Categories</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('dashboard') }}"><i class="material-icons">dashboard</i>Dashboard</a></li>
             {% if session.username %}
             <li><a href="{{url_for('logout')}}"><i class="material-icons">fingerprint</i>Logout</a></li>
             {% else %}
@@ -73,7 +81,7 @@
     <footer class="page-footer grey darken-4">
         <div class="footer-copyright">
             <div class="container">
-                <p class="grey-text text-lighten-4"> Absolute Cookbook © Copyright <span id='year'></span></p>
+                <p class="grey-text text-lighten-4"> Absolute Cookbook &copy; <span id='year'></span></p>
                 <p class="grey-text text-lighten-4">Site Created By Harry Sibbenga</p>
             </div>
         </div>
