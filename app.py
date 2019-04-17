@@ -37,7 +37,18 @@ def find_user(user_input, coll):
             user = users.find_one({"username": user_input})
             return user
 
-
+def limit_array(arr, offset, limit):
+    """
+        Used to limit amount of items in an array
+    """
+    if offset or limit:
+        if limit is not None:
+            limit = offset + limit        
+    else:
+        limit = len(arr)
+        arr = arr[offset:limit]
+    return arr
+            
 ## ------- routes -------
 
 @app.route('/')
@@ -222,7 +233,24 @@ def saved_recipes(page_id, username):
         for recipe in all_recipes:
             if recipe['_id'] in user['saved_recipes']:
                 recipes_saved.append(recipe)
-        return render_template("savedrecipes.html", recipes=recipes_saved)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipes.find().count()
+        if p_offset > num_results:
+            p_offset = num_results
+        saved_recipes = limit_array(recipes_saved, p_limit, p_offset)
+        print(saved_recipes)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/saved_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/saved_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : saved_recipes
+        }
+        return render_template("savedrecipes.html", args=args)
 
 @app.route('/view_recipes/<page_id>/<username>')
 def view_recipes(page_id, username):
@@ -237,7 +265,24 @@ def view_recipes(page_id, username):
         for recipe in all_recipes:
             if recipe['user'] == username:
                 recipes_created.append(recipe)
-        return render_template("viewrecipes.html", recipes=recipes_created)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipes.find().count()
+        if p_offset > num_results:
+            p_offset = num_results
+        saved_recipes = limit_array(recipes_created, p_limit, p_offset)
+        print(saved_recipes)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/view_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/view_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : saved_recipes
+        }
+        return render_template("viewrecipes.html", args=args)
 
 @app.route('/edit_recipe/<recipe_id>/<username>')
 def edit_recipe(recipe_id, username):
