@@ -20,11 +20,11 @@
             <ul class="right hide-on-med-and-down">
                 <li><a href="{{ url_for('get_recipes', limit=6, offset=0) }}">Menu</a></li>
                 {% if session.username %}
-                <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes') }}">Saved Recipes</a></li>
+                <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes', limit=6, offset=0) }}">Saved Recipes</a></li>
                 {% else %}
                 <li><a href="{{ url_for('saved_recipes', username='no_user', page_id='saved_recipes') }}">Saved Recipes</a></li>
                 {% endif %} {% if session.username %}
-                <li><a href="{{ url_for('view_recipes', username=session.username, page_id='view') }}">View Recipes</a></li>
+                <li><a href="{{ url_for('view_recipes', username=session.username, page_id='view', limit=6, offset=0) }}">View Recipes</a></li>
                 {% else %}
                 <li><a href="{{ url_for('view_recipes', username='no_user', page_id='view') }}">View Recipes</a></li>
                 {% endif %} {% if session.username %}
@@ -47,11 +47,11 @@
         <ul class="sidenav show-on-med-and-down" id="slide-out">
             <li><a href="{{ url_for('get_recipes', limit=6, offset=0) }}"><i class="material-icons">view_list</i>Menu</a></li>
             {% if session.username %}
-            <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes') }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
+            <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes', limit=6, offset=0) }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
             {% else %}
             <li><a href="{{ url_for('saved_recipes', username='no_user', page_id='saved_recipes') }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
             {% endif %} {% if session.username %}
-            <li><a href="{{ url_for('view_recipes', username=session.username, page_id='view') }}"><i class="material-icons">book</i>View Recipes</a></li>
+            <li><a href="{{ url_for('view_recipes', username=session.username, page_id='view', limit=6, offset=0) }}"><i class="material-icons">book</i>View Recipes</a></li>
             {% else %}
             <li><a href="{{ url_for('view_recipes', username='no_user', page_id='view') }}"><i class="material-icons">book</i>View Recipes</a></li>
             {% endif %} {% if session.username %}

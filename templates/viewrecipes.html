@@ -1,7 +1,8 @@
 {% extends 'base.html' %} {% block content %}
 <section id="view-recipes" class="max-height">
+    {% if args.num_results > args.p_limit %}
     <div class="row">
-        {% for recipe in recipes %}
+        {% for recipe in args.recipes %}
         <div class="col s12 m6 l4">
             <div class="card">
                 <div class="card-image">
@@ -25,6 +26,15 @@
             </div>
         </div>
         {% endfor %}
+        <div class="col s12">
+            {% if args.p_offset > 0 %}
+            <a href="{{args.prev_url}}"><i class="large material-icons">keyboard_arrow_left</i></a> 
+            {% endif %} 
+            {% if args.p_offset + args.p_limit < args.num_results %} 
+            <a href="{{args.next_url}}"><i class="large material-icons">keyboard_arrow_right</i></a>
+            {% endif %}
+        </div>
     </div>
+    {% endif %}
 </section>
 {% endblock %}
