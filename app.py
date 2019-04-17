@@ -17,11 +17,11 @@ mongo = PyMongo(app)
 
 allergins = mongo.db.allergins 
 authors = mongo.db.authors
-categories=mongo.db.categories
+categories = mongo.db.categories
 cuisines = mongo.db.cuisines
 countries = mongo.db.countries
 diets = mongo.db.diets
-origins=mongo.db.origins
+origins = mongo.db.origins
 recipes = mongo.db.recipes
 types = mongo.db.types
 users = mongo.db.users
@@ -36,7 +36,7 @@ def find_user(user_input, coll):
         if user['username'] == user_input:
             user = users.find_one({"username": user_input})
             return user
-        
+
 
 ## ------- routes -------
 
@@ -49,10 +49,26 @@ def get_recipes():
     """
         Gets the collections from MongoDB Atlas and renders them on the recipes.html page
     """
-    return render_template('recipes.html', recipes=recipes.find(), 
-    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    p_limit = int(request.args['limit'])
+    p_offset = int(request.args['offset'])
+    if p_offset < 0:
+        p_offset = 0
+    num_results = recipes.find().count()
+    if p_offset > num_results:
+        p_offset = num_results
+    all_recipes = recipes.find().limit(p_limit).skip(p_offset)
+    args = {
+        "p_limit" : p_limit,
+        "p_offset" : p_offset,
+        "num_results" : num_results,
+        "next_url" : "/get_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+        "prev_url" : "/get_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+        "recipes" : all_recipes
+    }
+	
+    return render_template('recipes.html', authors=authors.find(), allergins=allergins.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
-    origins=origins.find(), categories=categories.find())
+    origins=origins.find(), categories=categories.find(), args=args)
 
 @app.route('/search_recipes', methods=['GET','POST'])
 def search_recipes():
@@ -162,7 +178,7 @@ def view_recipe(recipe_id, username):
     """
     the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
     if username == "no_user":
-        return render_template('viewrecipe.html', recipe=the_recipe)
+        return render_template('viewrecipe.html', recipe=the_recipe, allergins=allergins.find())
     elif username == "Admin" or username == the_recipe['user']:
         recipe_allergens_list = the_recipe['allergins']
         return render_template('viewrecipeowner.html', recipe_allergens=recipe_allergens_list,
@@ -415,7 +431,7 @@ def edit_category(username, category_id):
         allergins.update_one(
             {
                 '_id': ObjectId(category_id)}, 
-                {'$set': { 'name': request.form.get('allergen')}
+                {'$set': { 'name': request.form.get('allergen'), 'image': request.form.get('allergen-image')}
             })
         return redirect(url_for('manage_categories', username=username, category_id=category_id, page_id="manage_categories"))
 
