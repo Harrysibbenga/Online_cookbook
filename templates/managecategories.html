@@ -9,29 +9,31 @@
         <div class="col s12 m6 l4 z-depth-3">
             <h2 class="section-title">Allergens</h2>
             <div class="row">
-                <ol>
-                {% for allergen in allergins %}
-                    <li class="col s12">
-                        <p>{{allergen.name}}
-                            <a class="btn-floating pulse right modal-trigger" href="#modal1"><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=allergen._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
-                        </p>
+                <ul class="list-container">
+                    {% for allergen in allergins %}
+                    <li class="col s12 list-item">
+                        <img src="{{allergen.image}}" class="list-image"></img>
+                        <p>{{allergen.name}}</p>
+                        <a class="btn-floating pulse right modal-trigger" href="#modal1"><i class="medium material-icons">edit</i></a>
+                        <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=allergen._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                        <!--Modal Structure -->
+                        <div id="modal1" class="modal">
+                            <form method="POST" action="{{ url_for('edit_category', category_id=allergen._id, username=session.username)}}">
+                                <div class="modal-content">
+                                    <h4>Edit Allergen</h4>
+                                    <label for="allergen">Allergen Name:</label>
+                                    <input id="allergen" name="allergen" type="text" value="{{allergen.name}}" class="validate">
+                                    <label for="allergen-imgae">Allergen Image URL:</label>
+                                    <input id="allergen-image" name="allergen-image" type="text" value="{{allergen.image}}" class="validate">
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
+                                </div>
+                            </form>
+                        </div>
                     </li>
-                 <!--Modal Structure -->
-                <div id="modal1" class="modal">
-                    <form method="POST" action="{{ url_for('edit_category', category_id=allergen._id, username=session.username,)}}">
-                        <div class="modal-content">
-                            <h4>Modal Header</h4>
-                            <label for="allergen">Edit Allergen:</label>
-                            <input id="allergen" name="allergen" type="text" value="{{allergen.name}}" class="validate">
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
-                        </div>
-                    </form>
-                </div>
-                {% endfor %}
-                </ol>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="row">
                 <form action="{{url_for('add_category', username=session.username, category='allergen', page_id='manage_categories' )}}" method="POST">
@@ -44,33 +46,33 @@
                             <div class="col s1">
                                 <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
                             </div>
-                        </div>
                     </div>
-                </form>
             </div>
+            </form>
         </div>
-        <div class="col s12 m6 l4 z-depth-3">
-            <h2 class="section-title">Author</h2>
-            <div class="row">
-                <ol>
-                    {% for author in authors %}
-                    <li class="col s12">
-                        <p>{{author.name}},{{author.country}}
-                            <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=author._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
-                        </p>
-                    </li>
-                    <div id="modal1" class="modal">
-                        <form method="POST" action="{{ url_for('edit_category', category_id=author._id, username=session.username,)}}">
-                            <div class="modal-content">
-                                <h4>Author Edit</h4>
-                                <label for="author_name">Name:</label>
-                                <input id="author_name" name="author_name" type="text" value="{{author.name}}" class="validate">
-                                <label for="author_country">Country:</label>
-                                <input id="author_country" name="author_country" type="text" value="{{author.country}}" class="validate">
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
+    </div>
+    <div class="col s12 m6 l4 z-depth-3">
+        <h2 class="section-title">Author</h2>
+        <div class="row">
+            <ol>
+                {% for author in authors %}
+                <li class="col s12">
+                    <p>{{author.name}},{{author.country}}
+                        <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
+                        <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=author._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                    </p>
+                </li>
+                <div id="modal1" class="modal">
+                    <form method="POST" action="{{ url_for('edit_category', category_id=author._id, username=session.username,)}}">
+                        <div class="modal-content">
+                            <h4>Author Edit</h4>
+                            <label for="author_name">Name:</label>
+                            <input id="author_name" name="author_name" type="text" value="{{author.name}}" class="validate">
+                            <label for="author_country">Country:</label>
+                            <input id="author_country" name="author_country" type="text" value="{{author.country}}" class="validate">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn modal-close waves-effect waves-green btn-flat" type="submit">Edit</a>
                             </div>
                         </form>
                     </div>
@@ -93,42 +95,42 @@
                             </div>
                             <div class="col s1">
                                 <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
-                            </div>
+                        </div>
+                </div>
+        </div>
+        </form>
+    </div>
+    </div>
+    <div class="col s12 m6 l4 z-depth-3">
+        <h2 class="section-title">Categories</h2>
+        <div class="row">
+            <ol>
+                {% for category in categories %}
+                <li class="col s12">
+                    <p>{{category.name}}
+                        <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
+                        <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=category._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
+                    </p>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="row">
+            <form action="{{url_for('add_category', username=session.username, category='category', page_id='manage_categories' )}}" method="POST">
+                <div class="input-field col s12">
+                    <div class="row">
+                        <div class="col s11">
+                            <label for="category">Add Category:</label>
+                            <input id="category" name="category" type="text" class="validate">
+                        </div>
+                        <div class="col s1">
+                            <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-        <div class="col s12 m6 l4 z-depth-3">
-            <h2 class="section-title">Categories</h2>
-            <div class="row">
-                <ol>
-                    {% for category in categories %}
-                    <li class="col s12">
-                        <p>{{category.name}}
-                            <a class="btn-floating pulse right modal-trigger" href=""><i class="medium material-icons">edit</i></a>
-                            <a class="btn-floating pulse right" href="{{ url_for('delete_category', category_id=category._id, username=session.username, page_id='manage_categories') }}"><i class="medium material-icons">delete</i></a>
-                        </p>
-                    </li>
-                    {% endfor %}
-                </ol>
-            </div>
-            <div class="row">
-                <form action="{{url_for('add_category', username=session.username, category='category', page_id='manage_categories' )}}" method="POST">
-                    <div class="input-field col s12">
-                        <div class="row">
-                            <div class="col s11">
-                                <label for="category">Add Category:</label>
-                                <input id="category" name="category" type="text" class="validate">
-                            </div>
-                            <div class="col s1">
-                                <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+    </div>
     </div>
     <div class="row">
         <div class="col s12 m6 l4 z-depth-3">

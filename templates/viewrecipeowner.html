@@ -76,8 +76,9 @@
                 <div class="row">
                     <ol>
                         {% for recipe_allergen in recipe_allergens %}
-                        <li class="col s12">
-                            <p class="recipe_allergen_name">{{recipe_allergen}}
+                        <li class="col s12 list-item">
+                            <img src="{{recipe_allergen.image}}" class="list-image"></img>
+                            <p class="recipe_allergen_name">{{recipe_allergen.name}}
                                 <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>

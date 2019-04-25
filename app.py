@@ -109,7 +109,7 @@ def filter_search():
     """
         Filters the search depending on what inputs have values and displays all the matching recipes. 
     """
-## ----- Inputs ------    
+    ## ----- Inputs ------    
     allergin_input = request.form.get('allergin_name')
     author_input = request.form.get('author_name')
     type_input = request.form.get('type_name')
@@ -118,8 +118,7 @@ def filter_search():
     origin_input = request.form.get('origin_name')
     category_input = request.form.get('category_name')
     country_input = request.form.get('country_name')
-
-## ----- Queries -------
+    ## ----- Queries -------
     allergin_q = {'allergins': allergin_input}
     author_q = {'author': author_input}
     category_q = {'category': category_input}
@@ -128,7 +127,6 @@ def filter_search():
     origin_q = {'origin': origin_input}
     type_q = {'type': type_input}
     country_q = {'country': country_input}
-    
     if allergin_input != None:
         recipe = recipes.find(allergin_q)
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
@@ -188,15 +186,19 @@ def view_recipe(recipe_id, username):
         a user is logged on depending on whether they are the owner/Admin they have a different view of the recipe.
     """
     the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
+    allergens_saved = []
+    all_allergens = allergins.find()
+    for allergen in all_allergens:
+        if allergen['_id'] in the_recipe['allergins']:
+            allergens_saved.append(allergen)
     if username == "no_user":
-        return render_template('viewrecipe.html', recipe=the_recipe, allergins=allergins.find())
+        return render_template('viewrecipe.html', recipe=the_recipe, allergins=allergins.find(), recipe_allergens=allergens_saved)
     elif username == "Admin" or username == the_recipe['user']:
-        recipe_allergens_list = the_recipe['allergins']
-        return render_template('viewrecipeowner.html', recipe_allergens=recipe_allergens_list,
-        recipe=the_recipe, recipe_id=recipe_id, username=username, authors=authors.find(), allergins=allergins.find(), types=types.find(), 
-        cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
+        return render_template('viewrecipeowner.html',recipe=the_recipe, recipe_id=recipe_id, recipe_allergens=allergens_saved ,username=username, 
+        authors=authors.find(), allergens=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
+        origins=origins.find(), categories=categories.find())
     else:
-        return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username)
+        return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username, recipe_allergens=allergens_saved)
 
 @app.route('/save_recipe/<recipe_id>/<username>/')
 def save_recipe(recipe_id, username):
@@ -363,19 +365,22 @@ def add_allergen(recipe_id, username):
     """
         Adds an allergen to the recipe and checks if an input is present if not then it returns an error message. 
     """
-    if request.form.get('allergen') == None or request.form.get('allergen') == '':
+    user_input =  request.form.get('allergen')
+    if user_input == None or user_input == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
-        recipe_allergens_list = recipe['allergins']
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, allergin_message=message, 
-        recipe=recipe, authors=authors.find(), recipe_allergens=recipe_allergens_list, allergens=allergins.find(), 
+        recipe=recipe, authors=authors.find(), allergens=allergins.find(), 
         types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
-        recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
-            {
-                'allergins':request.form.get('allergin')
-            }})
-    return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
+        all_allergens = allergins.find()
+        for allergen in all_allergens:
+            if user_input == allergen['name']:
+                recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+                    {
+                        'allergins': allergen['_id']
+                    }})
+        return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
 @app.route('/add_ingredient/<recipe_id>/<username>', methods=['GET','POST'])
 def add_ingredient(recipe_id, username):
@@ -617,7 +622,7 @@ def login(page_id):
             if page_id == 'saved_recipes':
                 return redirect(url_for('saved_recipes', page_id=page_id, username=session['username']))
             elif page_id == 'view':
-                return redirect(url_for('view_recipes', page_id=page_id, username=session['username']))
+                return redirect(url_for('view_recipes', page_id=page_id, username=session['username'], limit=6, offset=0))
             elif page_id == 'manage_categories':
                 return redirect(url_for('manage_categories', page_id=page_id, username=session['username']))
             elif page_id == 'home':
