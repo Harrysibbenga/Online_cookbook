@@ -74,16 +74,16 @@
             <div class="z-depth-3 allergens-section">
                 <h2 class="section-title">Allergens</h2>
                 <div class="row">
-                    <ol>
+                    <ul class="list-container">
                         {% for recipe_allergen in recipe_allergens %}
-                        <li class="col s12 list-item">
+                        <li class="col s6 l4 list-item">
                             <img src="{{recipe_allergen.image}}" class="list-image"></img>
-                            <p class="recipe_allergen_name">{{recipe_allergen.name}}
+                            <p>{{recipe_allergen.name}}
                                 <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
-                    </ol>
+                    </ul>
                 </div>
                 <div class="row">
                     <div class="col s12">
@@ -91,11 +91,12 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <div class="col s11">
-                                        <select name="allergen">
-                                            <option disabled selected>Choose your option</option>
+                                        <label for="allergens">Add Allergens:</label>
+                                        <select class="icons" name='allergens'>
+                                          <option disabled selected>Choose your option</option>
                                             {% for allergen in allergens %}
-                                                <option value='{{allergen.name}}'>{{allergen.name}}</option>
-                                            {% endfor %} 
+                                              <option value="{{allergen.name}}" data-icon="{{allergen.image}}" class="left">{{allergen.name}}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div class="col s1">
@@ -129,16 +130,16 @@
             <div class="z-depth-3 ingredients-section">
                 <h2 class="section-title">Ingredients</h2>
                 <div class="row">
-                    <ol>
-                        {% for ingredient in recipe.ingredients %}
-                        <li class="col s12">
-                            <p>{{ingredient}}
-                                <a class="btn-floating pulse right" href=""><i class="medium material-icons">edit</i></a>
+                    <ul class="list-container">
+                        {% for recipe_ingredient in recipe_ingredients %}
+                        <li class="col s6 l4 list-item">
+                            <img src="{{recipe_ingredient.image}}" class="list-image"></img>
+                            <p>{{recipe_ingredient.name}}
                                 <a class="btn-floating pulse right" href="{{ url_for('delete_ingredient', recipe_id=recipe._id, username=session.username, recipe_ingredient=ingredient) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
-                    </ol>
+                    </ul>
                 </div>
                 <div class="row">
                     <div class="col s12">
@@ -147,8 +148,13 @@
                                 <div class="input-field col s12">
                                     <div class="row">
                                         <div class="col s11">
-                                            <label for="ingredient">Add Ingredient:</label>
-                                            <input id="ingredient" name="ingredient" type="text" class="validate">
+                                            <select class="icons" name='ingredients'>
+                                              <option disabled selected>Choose your option</option>
+                                                {% for ingredient in ingredients %}
+                                                  <option value="{{ingredient.name}}" data-icon="{{ingredient.image}}" class="left">{{ingredient.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="ingredients">Add Ingredient:</label>
                                         </div>
                                         <div class="col s1">
                                             <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>

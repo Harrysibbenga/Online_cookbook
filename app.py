@@ -25,6 +25,7 @@ origins = mongo.db.origins
 recipes = mongo.db.recipes
 types = mongo.db.types
 users = mongo.db.users
+ingredients = mongo.db.ingredients
 
 ## ------- functions -------
 
@@ -191,12 +192,17 @@ def view_recipe(recipe_id, username):
     for allergen in all_allergens:
         if allergen['_id'] in the_recipe['allergins']:
             allergens_saved.append(allergen)
+    ingredients_saved = []
+    all_ingredients = ingredients.find()
+    for ingredient in all_ingredients:
+        if ingredient['_id'] in the_recipe['ingredients']:
+            ingredients_saved.append(ingredient)
     if username == "no_user":
-        return render_template('viewrecipe.html', recipe=the_recipe, allergins=allergins.find(), recipe_allergens=allergens_saved)
+        return render_template('viewrecipe.html', recipe=the_recipe, recipe_allergens=allergens_saved, recipe_ingredients=ingredients_saved)
     elif username == "Admin" or username == the_recipe['user']:
         return render_template('viewrecipeowner.html',recipe=the_recipe, recipe_id=recipe_id, recipe_allergens=allergens_saved ,username=username, 
         authors=authors.find(), allergens=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
-        origins=origins.find(), categories=categories.find())
+        origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), recipe_ingredients=ingredients_saved)
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username, recipe_allergens=allergens_saved)
 
@@ -365,7 +371,7 @@ def add_allergen(recipe_id, username):
     """
         Adds an allergen to the recipe and checks if an input is present if not then it returns an error message. 
     """
-    user_input =  request.form.get('allergen')
+    user_input =  request.form.get('allergens')
     if user_input == None or user_input == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
@@ -387,17 +393,21 @@ def add_ingredient(recipe_id, username):
     """
         Adds an ingredient to the recipe and checks if an input is present if not then it returns an error message. 
     """
-    if request.form.get('ingredient') == None or request.form.get('ingredient') == '':
+    user_input = request.form.get('ingredients')
+    if user_input == None or user_input == '':
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, ingredient_message=message, 
         recipe=recipe, authors=authors.find(), allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), ingredients=ingredients.find())
     else:
-        recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
-            {
-                'ingredients':request.form.get('ingredient').capitalize()
-            }})
+        all_ingredients = ingredients.find()
+        for ingredient in all_ingredients:
+            if user_input == ingredient['name']:
+                recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+                    {
+                        'ingredients':ingredient['_id']
+                    }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
 @app.route('/add_instruction/<recipe_id>/<username>', methods=['POST'])

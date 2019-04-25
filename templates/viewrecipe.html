@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <section id='view-recipe'>
     <div class="row">
-        <div class="col s12 m10 offset-m1 l12">
+        <div class="col s12 l12">
             <h1 class="recipe-name">{{recipe.name}}</h1>
         </div>
     </div>
@@ -9,7 +9,7 @@
         <div class="recipe-image-container col s12 m10 offset-m1 l6">
             <img class="img-dimentions" src="{{recipe.image_url}}"></img>
         </div>
-        <div class="col s12 m10 offset-m1 l6">
+        <div class="col s12 l6">
             <p class="recipe-description center-align z-depth-3">{{recipe.description}}</p>
             <div class="info-section z-depth-3 center-align">
                 <div class="row">
@@ -73,12 +73,12 @@
 <section>
     <div class="row">
         <div class="col s12 m6">
-            <div class="z-depth-3 allergins-section">
+            <div class="z-depth-3 allergens-section">
                 <h2 class="section-title">Allergins</h2>
                 <div class="row">
                     <ul class="list-container">
                         {% for allergen in recipe_allergens %}
-                        <li class="col s12 m4 list-item">
+                        <li class="col s6 l4 list-item">
                             <img src="{{allergen.image}}" class="list-image"></img>
                             <p>{{allergen.name}}</p>
                         </li>
@@ -91,13 +91,14 @@
             <div class="z-depth-3 ingredients-section">
                 <h2 class="section-title">Ingredients</h2>
                 <div class="row">
-                    <ol>
-                        {% for ingredient in recipe.ingredients %}
-                        <li class="col s12 l4">
-                            <p>{{ingredient}}</p>
+                    <ul class="list-container">
+                        {% for ingredient in recipe_ingredients %}
+                        <li class="col s6 l4 list-item">
+                            <img src="{{ingredient.image}}" class="list-image"></img>
+                            <p>{{ingredient.name}}</p>
                         </li>
                         {% endfor %}
-                    </ol>
+                    </ul>
                 </div>
             </div>
         </div>

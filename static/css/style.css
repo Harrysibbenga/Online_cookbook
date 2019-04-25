@@ -85,12 +85,12 @@
     height: 18rem;
 }
 
-.list-container {
-    list-style-type: none;
+div .list-container {
+    text-align: center;
 }
 
 div .list-container .list-item {
-    margin: 5px;
+    margin-bottom: 1rem;
 }    
 
 .list-image {
@@ -101,8 +101,7 @@ div .list-container .list-item {
 }
 
 div .list-container .list-item p {
-    display: inline-block;
-    vertical-align: middle; 
+    display: block;
 }
 
 /* View recipe page*/
@@ -127,14 +126,10 @@ div .list-container .list-item p {
     margin-left: 1rem;
 }
 
-.allergins-section {
-    margin-bottom: 1rem;
-}
-
 .instructions-section,
 .info-section,
 .ingredients-section,
-.allergins-section {
+.allergens-section {
     padding: 1rem;
 }
 
@@ -162,8 +157,4 @@ div .list-container .list-item p {
     .message-container {
         margin-top: 1rem;
     }
-}
-
-div .list-container .list-item {
-    margin: 0;
 }
