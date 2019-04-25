@@ -16,7 +16,7 @@ function show_category_chart(ndx) {
     var group = dim.group();
 
     dc.barChart("#category-chart")
-        .width(300)
+        .width(400)
         .height(300)
         .dimension(dim)
         .group(group)
@@ -33,7 +33,7 @@ function show_origin_pie_chart(ndx) {
 
     dc.pieChart("#origin-chart")
         .height(300)
-        .radius(125)
+        .radius(150)
         .transitionDuration(1500)
         .dimension(dim)
         .group(group);
@@ -73,7 +73,7 @@ function show_diet_distribution(ndx) {
 
 
     dc.barChart("#diet-distribution")
-        .width(300)
+        .width(400)
         .height(300)
         .dimension(dim)
         .group(type_by_meat, "Meat")
@@ -88,11 +88,11 @@ function show_diet_distribution(ndx) {
                 return 0;
             }
         })
-        .transitionDuration(500)
+        .transitionDuration(1500)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
         .xAxisLabel("Types of Food")
-        .legend(dc.legend().x(350).y(20).itemHeight(15).gap(5))
+        .legend(dc.legend().x(320).y(20).itemHeight(15).gap(5))
 }
 
 function show_cuisine_chart(ndx) {
@@ -100,7 +100,7 @@ function show_cuisine_chart(ndx) {
     var group = dim.group();
 
     dc.barChart("#users-chart")
-        .width(300)
+        .width(400)
         .height(300)
         .dimension(dim)
         .group(group)
