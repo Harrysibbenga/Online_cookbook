@@ -9,8 +9,7 @@ from bson.json_util import dumps
 app = Flask(__name__)
 app.secret_key = "some_secret"
 app.config['MONGO_DBNAME'] = 'online_cookbook'
-app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
-
+app.config['MONGO_URI'] = 'mongodb+srv://Admin:0nline_cookbook@myfirstcluster-33ilg.mongodb.net/online_cookbook?retryWrites=true'
 mongo = PyMongo(app)
 
 ## ------- collections --------
@@ -254,8 +253,8 @@ def saved_recipes(page_id, username):
             "p_limit" : p_limit,
             "p_offset" : p_offset,
             "num_results" : num_results,
-            "next_url" : "/saved_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
-            "prev_url" : "/saved_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "next_url" : "saved_recipes/saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset+p_limit),
+            "prev_url" : "saved_recipes/saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset-p_limit),
             "recipes" : saved_recipes
         }
         return render_template("savedrecipes.html", args=args)
@@ -286,8 +285,8 @@ def view_recipes(page_id, username):
             "p_limit" : p_limit,
             "p_offset" : p_offset,
             "num_results" : num_results,
-            "next_url" : "/view_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
-            "prev_url" : "/view_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "next_url" : "view_recipes/view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset+p_limit),
+            "prev_url" : "view_recipes/view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset-p_limit),
             "recipes" : saved_recipes
         }
         return render_template("viewrecipes.html", args=args)
@@ -630,13 +629,13 @@ def login(page_id):
         elif user['password'] == password_input:
             session['username'] = username_input
             if page_id == 'saved_recipes':
-                return redirect(url_for('saved_recipes', page_id=page_id, username=session['username']))
+                return redirect(url_for('saved_recipes', page_id=page_id, username=session['username'], limit=6, offset=0))
             elif page_id == 'view':
                 return redirect(url_for('view_recipes', page_id=page_id, username=session['username'], limit=6, offset=0))
             elif page_id == 'manage_categories':
                 return redirect(url_for('manage_categories', page_id=page_id, username=session['username']))
             elif page_id == 'home':
-                return redirect(url_for("get_recipes"))
+                return redirect(url_for("get_recipes", limit=6, offset=0))
             elif page_id == 'add_recipe':
                 return redirect(url_for('add_recipe', page_id=page_id, username=session['username']))
             else:
@@ -698,6 +697,4 @@ def onlinecookbook_recipes():
     return json_recipes
 
 if __name__ == '__main__':
-    app.run(host=os.environ.get('IP'),
-        port=int(os.environ.get('PORT')),
-        debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
