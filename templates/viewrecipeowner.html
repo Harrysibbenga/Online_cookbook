@@ -131,11 +131,11 @@
                 <h2 class="section-title">Ingredients</h2>
                 <div class="row">
                     <ul class="list-container">
-                        {% for recipe_ingredient in recipe_ingredients %}
+                        {% for ingredient in recipe.ingredients %}
                         <li class="col s6 l4 list-item">
-                            <img src="{{recipe_ingredient.image}}" class="list-image"></img>
-                            <p>{{recipe_ingredient.name}}
-                                <a class="btn-floating pulse right" href="{{ url_for('delete_ingredient', recipe_id=recipe._id, username=session.username, recipe_ingredient=ingredient) }}"><i class="medium material-icons">delete</i></a>
+                            <img src="{{ingredient.image}}" class="list-image"></img>
+                            <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}
+                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
                         </li>
                         {% endfor %}
@@ -158,6 +158,19 @@
                                         </div>
                                         <div class="col s1">
                                             <button class="btn waves-effect waves-light btn-floating pulse right" type="submit"><i class="medium material-icons">add</i></button>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <input id="amount" name="amount" type="number" class="validate">
+                                            <label for="amount">Amount</label>
+                                        </div>
+                                        <div class="input-field col s6">
+                                            <select name="unit">
+                                                <option disabled selected>Choose your option</option>
+                                                {% for unit in units %}
+                                                    <option value={{unit.name}}>{{unit.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label>Units</label>
                                         </div>
                                     </div>
                                 </div>

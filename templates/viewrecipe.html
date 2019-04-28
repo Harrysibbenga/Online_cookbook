@@ -92,10 +92,10 @@
                 <h2 class="section-title">Ingredients</h2>
                 <div class="row">
                     <ul class="list-container">
-                        {% for ingredient in recipe_ingredients %}
+                        {% for ingredient in recipe.ingredients %}
                         <li class="col s6 l4 list-item">
                             <img src="{{ingredient.image}}" class="list-image"></img>
-                            <p>{{ingredient.name}}</p>
+                            <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}</p>
                         </li>
                         {% endfor %}
                     </ul>
