@@ -90,7 +90,8 @@ div .list-container {
 }
 
 div .list-container .list-item {
-    margin-bottom: 1rem;
+    margin: 0;
+    padding-top: 0.75rem;
 }    
 
 .list-image {
@@ -101,7 +102,9 @@ div .list-container .list-item {
 }
 
 div .list-container .list-item p {
-    display: block;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0.25rem;
 }
 
 /* View recipe page*/
