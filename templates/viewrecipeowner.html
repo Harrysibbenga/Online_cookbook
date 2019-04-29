@@ -134,9 +134,15 @@
                         {% for ingredient in recipe.ingredients %}
                         <li class="col s6 l4 list-item">
                             <img src="{{ingredient.image}}" class="list-image"></img>
+                            {% if ingredient.amount == '' %}
+                            <p>{{ingredient.name}}
+                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
+                            </p>
+                            {% else %}
                             <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}
                                 <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
                             </p>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>
