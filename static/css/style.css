@@ -102,8 +102,7 @@ div .list-container .list-item {
 }
 
 div .list-container .list-item p {
-    display: inline-block;
-    vertical-align: middle;
+    display: block;
     padding: 0.25rem;
 }
 
@@ -144,6 +143,14 @@ div .list-container .list-item p {
 
 .message-container {
     margin-top: 3rem;
+}
+
+/* Manage Categories */
+#manage_categories-page div .list-container {
+    text-align: left;
+}
+#manage_categories-page div .list-container .list-item p {
+    display: inline-block;
 }
 
 /* Media queries */
