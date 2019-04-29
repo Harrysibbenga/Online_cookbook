@@ -14,7 +14,7 @@ mongo = PyMongo(app)
 
 ## ------- collections --------
 
-allergins = mongo.db.allergins 
+allergens = mongo.db.allergins 
 authors = mongo.db.authors
 categories = mongo.db.categories
 cuisines = mongo.db.cuisines
@@ -78,7 +78,7 @@ def get_recipes():
         "recipes" : all_recipes
     }
 	
-    return render_template('recipes.html', authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    return render_template('recipes.html', authors=authors.find(), allergens=allergens.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find(), args=args)
 
@@ -90,7 +90,7 @@ def search_recipes():
     user_input = request.form['recipe_name']
     recipes.create_index([('name', 'text')])
     return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}),
-    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    authors=authors.find(), allergens=allergens.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
 
@@ -101,7 +101,7 @@ def search_ingredients():
     """
     ingredient_input = request.form['ingredient_name']
     return render_template('recipes.html', recipes=recipes.find({'ingredients': ingredient_input.capitalize()}), 
-    authors=authors.find(), allergins=allergins.find(), types=types.find(),
+    authors=authors.find(), allergens=allergens.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find())
 
@@ -120,7 +120,7 @@ def filter_search():
     category_input = request.form.get('category_name')
     country_input = request.form.get('country_name')
     ## ----- Queries -------
-    allergin_q = {'allergins': allergin_input}
+    allergen_q = {'allergens': allergin_input}
     author_q = {'author': author_input}
     category_q = {'category': category_input}
     cuisine_q = {'cuisine': cuisine_input}
@@ -129,44 +129,44 @@ def filter_search():
     type_q = {'type': type_input}
     country_q = {'country': country_input}
     if allergin_input != None:
-        recipe = recipes.find(allergin_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        recipe = recipes.find(allergen_q)
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif author_input != None:
         recipe = recipes.find(author_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif category_input != None:
         recipe = recipes.find(category_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif cuisine_input != None:
         recipe = recipes.find(cuisine_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif diet_input != None:
         recipe = recipes.find(diet_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif origin_input != None:
         recipe = recipes.find(origin_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
     elif type_input != None:
         recipe = recipes.find(type_q)
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     
@@ -174,7 +174,7 @@ def filter_search():
         found_authors = authors.find(country_q)
         for author in found_authors:
             recipe = recipes.find({'author': author['name']})
-        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergins=allergins.find(), 
+        return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
         
@@ -188,15 +188,15 @@ def view_recipe(recipe_id, username):
     """
     the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
     allergens_saved = []
-    all_allergens = allergins.find()
+    all_allergens = allergens.find()
     for allergen in all_allergens:
-        if allergen['_id'] in the_recipe['allergins']:
+        if allergen['_id'] in the_recipe['allergens']:
             allergens_saved.append(allergen)
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_allergens=allergens_saved)
     elif username == "Admin" or username == the_recipe['user']:
         return render_template('viewrecipeowner.html',recipe=the_recipe, recipe_id=recipe_id, recipe_allergens=allergens_saved ,username=username, 
-        authors=authors.find(), allergens=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
+        authors=authors.find(), allergens=allergens.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
         origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), units=units.find())
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username, recipe_allergens=allergens_saved)
@@ -217,7 +217,7 @@ def save_recipe(recipe_id, username):
         the_recipe =  recipes.find_one({"_id": ObjectId(recipe_id)})
         if username == "Admin" or username == the_recipe['user']:
             return render_template('viewrecipeowner.html', recipe=the_recipe, message=message, authors=authors.find(), 
-            allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
+            allergens=allergens.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), 
             categories=categories.find())
         else:
             return render_template('viewrecipe.html', recipe=the_recipe, message=message )
@@ -371,15 +371,15 @@ def add_allergen(recipe_id, username):
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, allergin_message=message, 
-        recipe=recipe, authors=authors.find(), allergens=allergins.find(), 
+        recipe=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), cuisines=cuisines.find(), diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
-        all_allergens = allergins.find()
+        all_allergens = allergens.find()
         for allergen in all_allergens:
             if user_input == allergen['name']:
                 recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
                     {
-                        'allergins': allergen['_id']
+                        'allergens': allergen['_id']
                     }})
         return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
@@ -395,7 +395,7 @@ def add_ingredient(recipe_id, username):
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, ingredient_message=message, 
-        recipe=recipe, authors=authors.find(), allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), 
+        recipe=recipe, authors=authors.find(), allergens=allergens.find(), types=types.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), units=units.find())
     else:
         all_ingredients = ingredients.find()
@@ -416,7 +416,7 @@ def add_instruction(recipe_id, username):
         message = "Cannot be blank"
         recipe = recipes.find_one({'_id': ObjectId(recipe_id)})
         return render_template("viewrecipeowner.html", recipe_id=recipe_id, username=username, instruction_message=message, 
-        recipe=recipe, authors=authors.find(), allergins=allergins.find(), types=types.find(), cuisines=cuisines.find(), 
+        recipe=recipe, authors=authors.find(), allergens=allergens.find(), types=types.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
     else:
         recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
@@ -438,7 +438,7 @@ def delete_allergen(recipe_id, username, recipe_allergen):
     """
         Delete any allergen using its value and update the database. 
     """
-    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergins': recipe_allergen}})
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergens': recipe_allergen}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
 @app.route('/delete_instruction/<recipe_id>/<username>/<recipe_instruction>')
@@ -466,17 +466,14 @@ def manage_categories(page_id, username):
         return redirect(url_for('login', page_id=page_id))
     else:
         return render_template('managecategories.html', page_id=page_id, username=username, authors=authors.find(), 
-        allergins=allergins.find(), types=types.find(), countries=countries.find(), countries_=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        allergens=allergens.find(), types=types.find(), countries=countries.find(), countries_=countries.find(), cuisines=cuisines.find(), 
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), units=units.find())
         
 @app.route('/edit_category/<username>/<category_id>', methods=['GET','POST'])
 def edit_category(username, category_id):
     """
         Edit any category using category_id and update the database. 
     """
-    
-    allergen = allergins.find_one({'_id': ObjectId(category_id)})
-    author = authors.find_one({'_id': ObjectId(category_id)})
     country = countries.find_one({'_id': ObjectId(category_id)})
     cuisine = cuisines.find_one({'_id': ObjectId(category_id)})
     category = categories.find_one({'_id': ObjectId(category_id)})
@@ -484,11 +481,11 @@ def edit_category(username, category_id):
     origin = origins.find_one({'_id': ObjectId(category_id)})
     type_of_food = types.find_one({'_id': ObjectId(category_id)})
     
-    if allergen:
-        allergins.update_one(
+    if country:
+        countries.update_one(
             {
                 '_id': ObjectId(category_id)}, 
-                {'$set': { 'name': request.form.get('allergen'), 'image': request.form.get('allergen-image')}
+                {'$set': { 'name': request.form.get('country')}
             })
         return redirect(url_for('manage_categories', username=username, category_id=category_id, page_id="manage_categories"))
 
@@ -498,26 +495,40 @@ def add_category(page_id, category, username):
         Add any category using the value of the category and update the database. 
         If no value is entered then user is prompted with a message.
     """
+    allergen = request.form.get('allergen')
+    allergen_image = request.form.get('allergen_image')
+    author = request.form.get('author')
+    author_country = request.form.get('author_country')
+    ingredient = request.form.get('ingredient')
+    ingredient_image = request.form.get('ingredient_image')
+    
     if category == "allergen":
-        if request.form.get('allergen') == None or request.form.get('allergen') == '':
+        if allergen == None or allergen == '':
             message = "Allergen name can't be empty"
             return redirect(url_for('manage_categories', username=username, page_id=page_id, allergen_error=message))
+        elif allergen_image == None or allergen_image == '':
+            message = "Allergen image can't be empty"
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, allergen_error=message))
         else:
-            allergins.insert_one({'name': request.form.get('allergen')})
+            allergens.insert_one(
+                {
+                    'name': allergen, 
+                    'image':allergen_image
+                })
             return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
     elif category == "author":
-        if request.form.get('author_country') == None or request.form.get('author_country') == '':
+        if author_country == None or author_country == '':
             message = "Country name can't be empty"
             return redirect(url_for('manage_categories', username=username, page_id=page_id, author_country_error=message))
-        elif request.form.get('author') == None or request.form.get('author') =='':
+        elif author == None or author =='':
             message = "Author name can't be empty"
             return redirect(url_for('manage_categories', username=username, page_id=page_id, author_name_error=message))
         else:
             authors.insert_one(
                 {
-                    'name': request.form.get('author'),
-                    'country': request.form.get('author_country')
+                    'name': author,
+                    'country': author_country
                 })
         return redirect(url_for('manage_categories', username=username, page_id=page_id))
     
@@ -552,7 +563,16 @@ def add_category(page_id, category, username):
         else:
             diets.insert_one({'name': request.form.get('diet')})
             return redirect(url_for('manage_categories', username=username, page_id=page_id))
-    
+    elif category == "ingredient":
+        if ingredient == None or ingredient == '':
+            message = "Ingredient name can't be empty"
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, ingredient_error=message))
+        elif ingredient_image == None or ingredient_image == '':
+            message = "Ingredient image can't be empty"
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, ingredient_error=message))
+        else:
+            ingredients.insert_one({'name': ingredient, 'image':ingredient_image})
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif category == "origin":
         if request.form.get('origin') == None or request.form.get('origin') == '':
             message = "Origin name can't be empty"
@@ -568,6 +588,14 @@ def add_category(page_id, category, username):
         else:
             types.insert_one({'name': request.form.get('type')})
             return redirect(url_for('manage_categories', username=username, page_id=page_id))
+    
+    elif category == "units":
+        if request.form.get('units') == None or request.form.get('units') == '':
+            message = "Unit name can't be empty"
+            return redirect(url_for('manage_categories', username=username, page_id=page_id, units_error=message))
+        else:
+            units.insert_one({'name': request.form.get('units')})
+            return redirect(url_for('manage_categories', username=username, page_id=page_id))
 
 @app.route('/delete_category/<category_id>/<username>/<page_id>')
 def delete_category(page_id, category_id, username):
@@ -575,7 +603,7 @@ def delete_category(page_id, category_id, username):
         Delete any category using category_id and update the database. 
     """
     
-    allergin = allergins.find_one({'_id': ObjectId(category_id)})
+    allergen = allergens.find_one({'_id': ObjectId(category_id)})
     author = authors.find_one({'_id': ObjectId(category_id)})
     country = countries.find_one({'_id': ObjectId(category_id)})
     cuisine = cuisines.find_one({'_id': ObjectId(category_id)})
@@ -583,9 +611,11 @@ def delete_category(page_id, category_id, username):
     diet = diets.find_one({'_id': ObjectId(category_id)})
     origin = origins.find_one({'_id': ObjectId(category_id)})
     type_of_food = types.find_one({'_id': ObjectId(category_id)})
+    ingredient = ingredients.find_one({'_id': ObjectId(category_id)})
+    unit = units.find_one({'_id': ObjectId(category_id)})
     
-    if allergin:
-        allergins.delete_one({'_id': ObjectId(category_id)})
+    if allergen:
+        allergens.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, page_id=page_id))
     elif author:
         authors.delete_one({'_id': ObjectId(category_id)})
@@ -608,7 +638,12 @@ def delete_category(page_id, category_id, username):
     elif type_of_food:
         types.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, page_id=page_id))
-
+    elif ingredient:
+        ingredients.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
+    elif units:
+        units.delete_one({'_id': ObjectId(category_id)})
+        return redirect(url_for('manage_categories', username=username, page_id=page_id))
 @app.route('/login/<page_id>', methods=['GET','POST'])
 def login(page_id):
     """
