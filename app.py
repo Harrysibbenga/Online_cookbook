@@ -193,9 +193,9 @@ def view_recipe(recipe_id, username):
     if username == "no_user":
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_allergens=allergens_saved)
     elif username == "Admin" or username == the_recipe['user']:
-        return render_template('viewrecipeowner.html',recipe=the_recipe, recipe_id=recipe_id, recipe_allergens=allergens_saved ,username=username, 
+        return render_template('viewrecipeowner.html',recipe=the_recipe, recipe_id=recipe_id ,username=username, 
         authors=authors.find(), allergens=allergens.find(), types=types.find(), cuisines=cuisines.find(), diets=diets.find(), 
-        origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), units=units.find())
+        origins=origins.find(), categories=categories.find(), ingredients=ingredients.find(), units=units.find(), recipe_allergens=allergens_saved)
     else:
         return render_template('viewrecipe.html', recipe=the_recipe, recipe_id=recipe_id, username=username, recipe_allergens=allergens_saved)
 
@@ -347,6 +347,7 @@ def create_recipe(username):
         'author': request.form.get('author'),
         'origin':request.form.get('origin'),
         'image_url':request.form.get('image_url'),
+        'allergens':[],
         'user': username
     })
     
@@ -399,10 +400,27 @@ def add_ingredient(recipe_id, username):
         all_ingredients = ingredients.find()
         for ingredient in all_ingredients:
             if user_input == ingredient['name']:
-                recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
-                    {
-                        'ingredients':{'name': ingredient['name'], 'image': ingredient['image'], 'amount': amount, 'unit': unit}
-                    }})
+                if unit == '' or unit == None:
+                    recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+                        {
+                            'ingredients':
+                            {
+                                'name': ingredient['name'], 
+                                'image': ingredient['image'], 
+                                'amount': amount
+                            }
+                        }})
+                else:
+                    recipes.update_one( {'_id': ObjectId(recipe_id)}, {'$addToSet':
+                        {
+                            'ingredients':
+                            {
+                                'name': ingredient['name'], 
+                                'image': ingredient['image'], 
+                                'amount': amount, 
+                                'unit': unit
+                            }
+                        }})
     return redirect(url_for("view_recipe", recipe_id=recipe_id, username=username))
 
 @app.route('/add_instruction/<recipe_id>/<username>', methods=['POST'])
