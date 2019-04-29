@@ -41,7 +41,7 @@
                                 <option value='{{category.name}}'>{{category.name}}</option>
                             {% endfor %}
                             </select>
-                            <label>Category</label>
+                            <label for="category">Category</label>
                         </div>
                         <div class="input-field col s6">
                             <select name="diet">
@@ -50,18 +50,18 @@
                                 <option value='{{diet.name}}'>{{diet.name}}</option>
                                 {% endfor %}
                             </select>
-                            <label>Diet</label>
+                            <label for="diet">Diet</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
                             <select name="cuisine">
-                                <option disabled selected>Select Cuisin</option>
+                                <option disabled selected>Select Cuisine</option>
                                 {% for cuisine in cuisines %}
                                 <option value='{{cuisine.name}}'>{{cuisine.name}}</option>
                                 {% endfor %}
                             </select>
-                            <label>Cuisin</label>
+                            <label for="cuisine">Cuisin</label>
                         </div>
                         <div class="input-field col s6">
                             <select name="type">
@@ -70,7 +70,7 @@
                                 <option value='{{type.name}}'>{{type.name}}</option>
                                 {% endfor %}
                             </select>
-                            <label>Type</label>
+                            <label for="type">Type</label>
                         </div>
                     </div>
                     <div class="row">
@@ -81,7 +81,7 @@
                                 <option value='{{author.name}}'>{{author.name}}</option>
                                 {% endfor %}
                             </select>
-                            <label>Author</label>
+                            <label for="Author">Author</label>
                         </div>
                         <div class="input-field col s6">
                             <select name="origin">
@@ -90,7 +90,7 @@
                                 <option value='{{origin.name}}'>{{origin.name}}</option>
                                 {% endfor %}
                             </select>
-                            <label>Origin</label>
+                            <label for="origin">Origin</label>
                         </div>
                     </div>
                     <div class="row">
