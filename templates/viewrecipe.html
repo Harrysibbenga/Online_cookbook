@@ -95,7 +95,11 @@
                         {% for ingredient in recipe.ingredients %}
                         <li class="col s6 l4 list-item">
                             <img src="{{ingredient.image}}" class="list-image"></img>
+                            {% if ingredient.amount == '' %}
+                            <p>{{ingredient.name}}</p>
+                            {% else %}
                             <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}</p>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>
