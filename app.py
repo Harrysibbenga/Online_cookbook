@@ -178,8 +178,6 @@ def filter_search():
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
         diets=diets.find(), origins=origins.find(), categories=categories.find())
         
-
-
 @app.route('/view_recipe/<recipe_id>/<username>')
 def view_recipe(recipe_id, username):
     """
@@ -438,7 +436,7 @@ def delete_allergen(recipe_id, username, recipe_allergen):
     """
         Delete any allergen using its value and update the database. 
     """
-    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergens': recipe_allergen}})
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'allergens': ObjectId(recipe_allergen)}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
 @app.route('/delete_instruction/<recipe_id>/<username>/<recipe_instruction>')
@@ -454,7 +452,7 @@ def delete_ingredient(recipe_id, username, recipe_ingredient):
     """
         Delete any ingredient using its value and update the database. 
     """
-    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'ingredients': recipe_ingredient}})
+    recipes.update_one({'_id': ObjectId(recipe_id)}, {'$pull': { 'ingredients': {'name': recipe_ingredient}}})
     return redirect(url_for('view_recipe', recipe_id=recipe_id, username=username))
 
 @app.route('/manage_categories/<page_id>/<username>')

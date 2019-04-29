@@ -78,9 +78,8 @@
                         {% for recipe_allergen in recipe_allergens %}
                         <li class="col s6 l4 list-item">
                             <img src="{{recipe_allergen.image}}" class="list-image"></img>
-                            <p>{{recipe_allergen.name}}
-                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
-                            </p>
+                            <p>{{recipe_allergen.name}}</p>
+                            <a class="btn-floating pulse center" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen._id) }}"><i class="medium material-icons">delete</i></a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -135,13 +134,11 @@
                         <li class="col s6 l4 list-item">
                             <img src="{{ingredient.image}}" class="list-image"></img>
                             {% if ingredient.amount == '' %}
-                            <p>{{ingredient.name}}
-                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
-                            </p>
+                            <p>{{ingredient.name}}</p>
+                            <a class="btn-floating pulse center" href="{{ url_for('delete_ingredient', recipe_id=recipe._id, username=session.username, recipe_ingredient=ingredient.name) }}"><i class="medium material-icons">delete</i></a>
                             {% else %}
-                            <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}
-                                <a class="btn-floating pulse right mr" href="{{ url_for('delete_allergen', recipe_id=recipe._id, username=session.username, recipe_allergen=recipe_allergen) }}"><i class="medium material-icons">delete</i></a>
-                            </p>
+                            <p>{{ingredient.amount}} {{ingredient.unit}} {{ingredient.name}}</p>
+                            <a class="btn-floating pulse center" href="{{ url_for('delete_ingredient', recipe_id=recipe._id, username=session.username, recipe_ingredient=ingredient.name) }}"><i class="medium material-icons">delete</i></a>
                             {% endif %}
                         </li>
                         {% endfor %}
