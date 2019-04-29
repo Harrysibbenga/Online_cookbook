@@ -10,7 +10,7 @@
             <h2 class="section-title">Allergens</h2>
             <div class="row">
                 <ul class="list-container">
-                    {% for allergen in allergins %}
+                    {% for allergen in allergens %}
                     <li class="col s12 list-item">
                         <img src="{{allergen.image}}" class="list-image"></img>
                         <p>{{allergen.name}}</p>
@@ -93,6 +93,23 @@
                     </div>
                 </form>
             </div>
+            {% if author_country_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{author_country_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{author_country_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col s12 m6 l4 z-depth-3">
             <h2 class="section-title">Categories</h2>
@@ -124,6 +141,23 @@
                     </div>
                 </form>
             </div>
+            {% if category_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{category_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{category_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -156,6 +190,23 @@
                     </div>
                 </form>
             </div>
+            {% if cuisine_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{cuisine_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{cuisine_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col s12 m6 l4 z-depth-3">
             <h2 class="section-title">Country</h2>
@@ -186,6 +237,23 @@
                     </div>
                 </form>
             </div>
+            {% if country_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{country_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{country_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col s12 m6 l4 z-depth-3">
             <h2 class="section-title">Diet</h2>
@@ -216,6 +284,23 @@
                     </div>
                 </form>
             </div>
+            {% if diet_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{diet_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{diet_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -300,6 +385,23 @@
                     </div>
                 </form>
             </div>
+            {% if origin_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{origin_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{origin_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col s12 m6 l4 z-depth-3">
             <h2 class="section-title">Type of food</h2>
@@ -330,6 +432,23 @@
                     </div>
                 </form>
             </div>
+            {% if type_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{type_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{type_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -362,6 +481,23 @@
                     </div>
                 </form>
             </div>
+            {% if units_error %}
+            <div class="col s12 displayed-message">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{units_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col s12 hide">
+                <div class="card blue-grey darken-1 message-container">
+                    <div class="card-content white-text center-align">
+                        <p>{{units_error}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
