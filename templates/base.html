@@ -18,7 +18,7 @@
             <a href="{{ url_for('index') }}" class="brand-logo">Absolute Cookbook</a>
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="{{ url_for('get_recipes', limit=2, offset=0) }}">Menu</a></li>
+                <li><a href="{{ url_for('get_recipes', limit=6, offset=0) }}">Menu</a></li>
                 {% if session.username %}
                 <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes', limit=6, offset=0) }}">Saved Recipes</a></li>
                 {% else %}
@@ -45,7 +45,7 @@
             </ul>
         </div>
         <ul class="sidenav show-on-med-and-down" id="slide-out">
-            <li><a href="{{ url_for('get_recipes', limit=2, offset=0) }}"><i class="material-icons">view_list</i>Menu</a></li>
+            <li><a href="{{ url_for('get_recipes', limit=6, offset=0) }}"><i class="material-icons">view_list</i>Menu</a></li>
             {% if session.username %}
             <li><a href="{{ url_for('saved_recipes', username=session.username, page_id='saved_recipes', limit=6, offset=0) }}"><i class="material-icons">apps</i>Saved Recipes</a></li>
             {% else %}

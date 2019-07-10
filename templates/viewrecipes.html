@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <section id="view-recipes" class="max-height">
-    {% if args.num_results >= args.p_limit %}
+    {% if args.num_results <= args.p_limit %}
     <div class="row">
         {% for recipe in args.recipes %}
         <div class="col s12 m6 l4">
