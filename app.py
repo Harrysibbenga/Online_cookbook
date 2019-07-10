@@ -49,6 +49,26 @@ def limit_array(arr, offset, limit):
         limit = len(arr)
         arr = arr[offset:limit]
     return arr
+
+def pagination_function(recipe):
+        recipe.find()
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
+        return args
             
 ## ------- routes -------
 
@@ -66,7 +86,7 @@ def get_recipes():
     if p_offset < 0:
         p_offset = 0
     num_results = recipes.find().count()
-    if p_offset > num_results:
+    if p_offset >= num_results:
         p_offset = num_results
     all_recipes = recipes.find().limit(p_limit).skip(p_offset)
     args = {
@@ -77,22 +97,41 @@ def get_recipes():
         "prev_url" : "/get_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
         "recipes" : all_recipes
     }
-	
     return render_template('recipes.html', authors=authors.find(), allergens=allergens.find(), types=types.find(),
     countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
     origins=origins.find(), categories=categories.find(), args=args)
 
-@app.route('/search_recipes', methods=['GET','POST'])
+@app.route('/search_recipes', methods=['GET', 'POST'])
 def search_recipes():
     """
         Creates an index of each recipe name and uses that index to search for recipes with similar names
     """
     user_input = request.form['recipe_name']
-    recipes.create_index([('name', 'text')])
-    return render_template('recipes.html', recipes=recipes.find({'$text': {'$search': user_input}}),
-    authors=authors.find(), allergens=allergens.find(), types=types.find(),
-    countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
-    origins=origins.find(), categories=categories.find())
+    print(user_input)
+    if user_input == '':
+        return redirect(url_for('get_recipes', limit=2, offset=0))
+    else:
+        recipes.create_index([('name', 'text')])
+        recipe = recipes.find({'$text': {'$search': user_input}})
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
+        return render_template('recipes.html', authors=authors.find(), allergens=allergens.find(), types=types.find(),
+        countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
+        origins=origins.find(), categories=categories.find(), args=args)
 
 @app.route('/search_ingredients', methods=['POST'])
 def search_ingredients():
@@ -100,12 +139,32 @@ def search_ingredients():
         Uses queries to search the database for matching ingredient names and displays those recipes found.
     """
     ingredient_input = request.form['ingredient_name']
-    return render_template('recipes.html', recipes=recipes.find({'ingredients': ingredient_input.capitalize()}), 
-    authors=authors.find(), allergens=allergens.find(), types=types.find(),
-    countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
-    origins=origins.find(), categories=categories.find())
+    if ingredient_input == '':
+        return redirect(url_for('get_recipes', limit=2, offset=0))
+    else: 
+        recipe = recipes.find({'ingredients': {"$elemMatch": {'name': ingredient_input.capitalize()}}})
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/search_recipes?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
+        return render_template('recipes.html',args=args, 
+        authors=authors.find(), allergens=allergens.find(), types=types.find(),
+        countries=countries.find(), cuisines=cuisines.find(), diets=diets.find(),
+        origins=origins.find(), categories=categories.find())
 
-@app.route('/filter_search', methods=['POST'])
+@app.route('/filter_search', methods=['GET','POST'])
 def filter_search():
     """
         Filters the search depending on what inputs have values and displays all the matching recipes. 
@@ -128,55 +187,184 @@ def filter_search():
     origin_q = {'origin': origin_input}
     type_q = {'type': type_input}
     country_q = {'country': country_input}
+
     if allergin_input != None:
         recipe = recipes.find(allergen_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif author_input != None:
         recipe = recipes.find(author_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif category_input != None:
         recipe = recipes.find(category_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif cuisine_input != None:
         recipe = recipes.find(cuisine_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif diet_input != None:
         recipe = recipes.find(diet_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif origin_input != None:
         recipe = recipes.find(origin_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif type_input != None:
         recipe = recipes.find(type_q)
+        p_limit = int(request.args['limit'])
+        p_offset = int(request.args['offset'])
+        if p_offset < 0:
+            p_offset = 0
+        num_results = recipe.count()
+        if p_offset >= num_results:
+            p_offset = num_results
+        all_recipes = recipe.limit(p_limit).skip(p_offset)
+        args = {
+            "p_limit" : p_limit,
+            "p_offset" : p_offset,
+            "num_results" : num_results,
+            "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+            "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+            "recipes" : all_recipes
+        }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
     
     elif country_input != None:
         found_authors = authors.find(country_q)
         for author in found_authors:
             recipe = recipes.find({'author': author['name']})
+            p_limit = int(request.args['limit'])
+            p_offset = int(request.args['offset'])
+            if p_offset < 0:
+                p_offset = 0
+            num_results = recipe.count()
+            if p_offset >= num_results:
+                p_offset = num_results
+            all_recipes = recipe.limit(p_limit).skip(p_offset)
+            args = {
+                "p_limit" : p_limit,
+                "p_offset" : p_offset,
+                "num_results" : num_results,
+                "next_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset+p_limit),
+                "prev_url" : "/filter_search?limit=%s&offset=%s"%(p_limit, p_offset-p_limit),
+                "recipes" : all_recipes
+            }
         return render_template('recipes.html', recipes=recipe, authors=authors.find(), allergens=allergens.find(), 
         types=types.find(), countries=countries.find(), cuisines=cuisines.find(), 
-        diets=diets.find(), origins=origins.find(), categories=categories.find())
+        diets=diets.find(), origins=origins.find(), categories=categories.find(), args=args)
         
 @app.route('/view_recipe/<recipe_id>/<username>')
 def view_recipe(recipe_id, username):
@@ -247,8 +435,8 @@ def saved_recipes(page_id, username):
             "p_limit" : p_limit,
             "p_offset" : p_offset,
             "num_results" : num_results,
-            "next_url" : "saved_recipes/saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset+p_limit),
-            "prev_url" : "saved_recipes/saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset-p_limit),
+            "next_url" : "../saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset+p_limit),
+            "prev_url" : "../saved_recipes/%s?limit=%s&offset=%s"%(username, p_limit, p_offset-p_limit),
             "recipes" : saved_recipes
         }
         return render_template("savedrecipes.html", args=args)
@@ -279,8 +467,8 @@ def view_recipes(page_id, username):
             "p_limit" : p_limit,
             "p_offset" : p_offset,
             "num_results" : num_results,
-            "next_url" : "view_recipes/view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset+p_limit),
-            "prev_url" : "view_recipes/view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset-p_limit),
+            "next_url" : "../view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset+p_limit),
+            "prev_url" : "../view/%s?limit=%s&offset=%s"%(username,p_limit, p_offset-p_limit),
             "recipes" : saved_recipes
         }
         return render_template("viewrecipes.html", args=args)
@@ -515,7 +703,7 @@ def add_category(page_id, category, username):
     allergen_image = request.form.get('allergen_image')
     author = request.form.get('author')
     author_country = request.form.get('author_country')
-    ingredient = request.form.get('ingredient')
+    ingredient = request.form.get('ingredient').capitalize()
     ingredient_image = request.form.get('ingredient_image')
     
     if category == "allergen":
@@ -657,9 +845,10 @@ def delete_category(page_id, category_id, username):
     elif ingredient:
         ingredients.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, page_id=page_id))
-    elif units:
+    elif unit:
         units.delete_one({'_id': ObjectId(category_id)})
         return redirect(url_for('manage_categories', username=username, page_id=page_id))
+
 @app.route('/login/<page_id>', methods=['GET','POST'])
 def login(page_id):
     """

@@ -4,7 +4,7 @@
         <div class="row">
             <!--Recipe name search-->
             <div id="recipe-search-box" class="col s12 m5 z-depth-2 ">
-                <form action="{{ url_for('search_recipes') }}" method="POST">
+                <form action="{{ url_for('search_recipes',limit=2, offset=0) }}" method="POST">
                     <div class="input-field">
                         <input id="recipe_name" name="recipe_name" type="text" class="validate">
                         <label for="recipe_name">Recipe Name</label>
@@ -15,7 +15,7 @@
 
             <!--Ingredients search-->
             <div id="ingredient-search-box" class="col s12 m5 z-depth-2 ">
-                <form action="{{ url_for('search_ingredients') }}" method="POST">
+                <form action="{{ url_for('search_ingredients', limit=1, offset=0) }}" method="POST">
                     <div class="input-field">
                         <input id="ingredient_name" name="ingredient_name" type="text" class="validate">
                         <label for="ingredient_name">Ingredient</label>
@@ -30,16 +30,16 @@
 <section id="filter-section">
     <div class="section">
         <div class="row">
-            <form class="z-depth-2" method="POST" action ="{{ url_for('filter_search') }}">
+            <form class="z-depth-2" method="POST" action ="{{ url_for('filter_search', limit=1, offset=0) }}">
                 <div class="row">
                     <div class="input-field col s3">
-                        <select name="allergin_name">
+                        <select name="allergen_name">
                             <option disabled selected>Choose your option</option>
-                            {% for allergin in allergins %}
-                              <option value='{{allergin.name}}'>{{allergin.name}}</option>
+                            {% for allergen in allergens %}
+                              <option value='{{allergen.name}}'>{{allergen.name}}</option>
                             {% endfor %}
                         </select>
-                        <label>Allergins</label>
+                        <label>Allergens</label>
                     </div>
                     <div class="input-field col s3">
                         <select name="author_name">
